@@ -1,0 +1,18 @@
+<div class="form-group">
+	<label for="{{ id }}" class="col-sm-3 control-label">{{ label|trans }}
+		{% if required %}<span class="req text-danger" title="{{ 'forms.required'|trans }}">*</span>{% endif %}
+	</label>
+	<div class="col-sm-5">
+		<textarea class="form-control{% if class %} {{ class }}{% endif %}" id="{{ id }}" name="{{ name }}" {% if placeholder %}placeholder="{{ placeholder|trans }}"{% endif %} {% if required %}required="1"{% endif %} {% if attr %}{% for k, v in attr %}{{ k }}="{{ v }}" {% endfor %}{% endif %}>{{ data|raw }}</textarea>
+		{% if help %}
+			<span class="help-block">{{ help|trans }}</span>
+		{% endif %}
+	</div>
+	{% if errors %}
+		<div class="col-sm-4 text-danger">
+			{% for e in errors %}
+				{{ e|trans }}{% if not loop.last %}; {% endif %}
+			{% endfor %}
+		</div>
+	{% endif %}
+</div>

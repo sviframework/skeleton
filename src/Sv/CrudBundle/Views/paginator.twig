@@ -1,0 +1,9 @@
+{% if pages|length %}
+<ul class="pagination pagination-sm">
+{% for page in pages %}
+	<li class="{% if page.current %}active {% if page.class %}{{ page.class }}{% endif %}{% endif %}">
+		{% if not page.current %}<a href="{{ page.href }}">{% else %}<span>{% endif %}{{ page.page }}{% if not page.current %}</a>{% else %}</span>{% endif %}
+	</li>
+{% endfor %}
+</ul>
+{% endif %}

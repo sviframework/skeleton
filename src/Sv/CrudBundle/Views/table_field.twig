@@ -1,0 +1,11 @@
+{% if col.type is sameas('actions') %}
+	{% include col.template with {entity:col.entity} %}
+{% elseif col.type is sameas('string') %}
+	{% if col.raw %}{{ col.value|raw }}{% else %}{{ col.value }}{% endif %}
+{% elseif col.type is sameas('boolean') %}
+	{% if col.value %}<b class="glyphicon glyphicon-ok"></b>{% endif %}
+{% elseif col.type is sameas('image') %}
+	<img src="{{ col.value }}" alt="" />
+{% elseif col.type is sameas('link') %}
+	<a {% if col.title %}title="{{ col.title }}"{% endif %}href="{{ col.href }}">{{ col.value }}</a>
+{% endif %}

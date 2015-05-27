@@ -1,0 +1,38 @@
+{% extends baseTemplate %}
+
+{% set title = (data.title)|trans %}
+
+{% block styles %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('svcrud/css/crud.css') }}"/>
+{% endblock %}
+
+{% block content %}
+
+	{% if data.filter %}<div class="filteredContainer">{% endif %}
+
+		{% if data.filter %}
+			<div class="fcFilter">
+				{{ data.filter.renderStart()|raw }}
+				{{ data.filter.renderRestFields()|raw }}
+					<button type="submit" class="btn btn-primary btn-sm">{{ 'crud.filter.apply'|trans }}</button>
+					<a href="?" class="btn btn-info btn-sm">{{ 'crud.filter.reset'|trans }}</a>
+				{{ data.filter.renderEnd()|raw }}
+			</div>
+		{% endif %}
+
+		{% if data.filter %}<div class="fcTable"><div class="fctInner">{% endif %}
+
+			{% if data.add %}
+				<p class="buttonsTopLine"><a class="pull-right btn btn-info" href="{{ path(data.add) }}?back={{ getRequestUri()|url_encode }}"><b class="glyphicon glyphicon-plus"></b> {{ 'crud.add'|trans }}</a></p>
+			{% endif %}
+
+			{% include templates.table with {table:data.table} %}
+
+			{% include templates.paginator with {'pages':data.pages} only %}
+
+		{% if data.filter %}</div></div>{% endif %}
+
+	{% if data.filter %}</div>{% endif %}
+
+{% endblock %}

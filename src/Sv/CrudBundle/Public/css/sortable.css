@@ -1,0 +1,74 @@
+ul.sortable, ul.sortable ul {
+	list-style:none;
+	margin:0;
+	padding:0;
+}
+ul.sortable {
+	border-top:1px #dedede solid;
+
+}
+ul.sortable .srtItem {
+	line-height:32px;
+	height:32px;
+	border-bottom:1px #dedede solid;
+}
+ul.sortable > li:hover {
+	background:#ffffdd;
+}
+ul.sortable .glyphicon-move {
+	cursor:move;
+	float:left;
+	margin-left:6px;
+	margin-top:6px;
+	font-size:18px;
+	color:#666;
+	margin-right:8px;
+}
+ul.sortable .glyphicon-move:hover {
+	color:#333;
+}
+ul.sortable ul {
+	margin-left:20px;
+}
+ul.sortable  {
+	border-bottom:0;
+}
+.srtiActions {
+	float:right;
+	width:20%;
+	overflow-x:hidden;
+}
+.srtiActions .srtCol {
+	float:right;
+}
+.srtiMain {
+	float:left;
+	width:30%;
+	overflow-x:hidden;
+}
+.srtiMain .mainText {
+	float:left;
+	max-width:76%;
+	overflow-x:hidden;
+	margin-right:6px;
+}
+.srtiCols {
+	float:left;
+	width:50%;
+	overflow-x:hidden;
+}
+ul.sortable .srtCol {
+	white-space:nowrap;
+	overflow-x:hidden;
+	padding:0 7px;
+}
+ul.sortable .srtCol.first {
+	padding-left:0;
+}
+ul.sortable .srtCol.last {
+	padding-right:0;
+}
+.srtCol .srtColsVal {
+	margin-right:15px;
+	cursor:help;
+}

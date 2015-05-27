@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Загрузка {% if type == 'file' %}файла{% else %}изображения{% endif %}</title>
+  <link rel="stylesheet" type="text/css" href="{{ asset('svfile/css/skin.min.css') }}" />
+</head>
+<body>
+  {% if result %}
+    <script type="text/javascript">
+      var args = top.tinymce.activeEditor.windowManager.getParams();
+
+      args.callback('{{ result }}');
+      top.tinymce.activeEditor.windowManager.close();
+    </script>
+  {% else %}
+    {{ form.renderStart()|raw }}
+
+      {{ form.renderField('upload')|raw }}
+
+        <div id="mceu_49" class="mce-container mce-panel mce-foot" hidefocus="1" tabindex="-1" role="group" style="position:absolute;border-width: 1px 0 0; bottom:0; left:0; width: 318px; height: 50px;">
+          <div id="mceu_49-body" class="mce-container-body mce-abs-layout" style="width: 300px; height: 50px;">
+            <div id="mceu_49-absend" class="mce-abs-end"></div>
+            <div id="mceu_50" class="mce-widget mce-btn mce-primary mce-first mce-abs-layout-item" tabindex="-1" aria-labelledby="mceu_50" role="button" style="left:10px; top:10px; width:50px; height:28px;">
+              <button role="presentation" type="submit" tabindex="-1" style="height: 100%; width: 100%;">Ок</button>
+            </div>
+            <div id="mceu_51" class="mce-widget mce-btn mce-last mce-abs-layout-item" tabindex="-1" aria-labelledby="mceu_51" role="button" style="left:70px; top: 10px; width: 87px; height: 28px;">
+              <button role="presentation" type="button" tabindex="-1" onclick="top.tinymce.activeEditor.windowManager.close();" style="height: 100%; width: 100%;">Отменить</button>
+            </div>
+          </div>
+        </div>
+		{{ form.renderEnd()|raw }}
+  {% endif %}
+</body>
+</html>

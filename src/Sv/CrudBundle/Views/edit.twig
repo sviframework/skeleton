@@ -1,0 +1,21 @@
+{% extends baseTemplate %}
+
+{% block styles %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="{{ asset('svcrud/jquery-ui/jquery-ui.min.css') }}"/>
+	<link rel="stylesheet" type="text/css" href="{{ asset('svcrud/css/crud.css') }}"/>
+{% endblock %}
+
+{% block scripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('svcrud/jquery-ui/jquery-ui.min.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('svcrud/js/edit.js') }}"></script>
+{% endblock %}
+
+{% set title = ('crud.title.list' ~ className)|trans ~ ' » ' ~ (add ? "crud.add"|trans : "crud.edit"|trans ~ ": " ~ entity) %}
+
+{% block content %}
+
+	{{ form.render()|raw }}
+
+{% endblock %}

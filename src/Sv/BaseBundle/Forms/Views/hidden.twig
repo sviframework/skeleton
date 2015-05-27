@@ -1,0 +1,1 @@
+<input type="hidden" class="form-control{% if class %} {{ class }}{% endif %}" id="{{ id }}" name="{{ name }}" {% if data %}value="{{ data }}"{% endif %} {% if attr %}{% for k, v in attr %}{{ k }}="{{ v }}" {% endfor %}{% endif %}/>

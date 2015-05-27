@@ -1,0 +1,5 @@
+<FilesMatch "\.(php|pl|py|jsp|asp|htm|shtml|sh|cgi.+)$">
+    SetHandler None
+</FilesMatch>
+
+php_flag engine off

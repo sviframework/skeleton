@@ -1,0 +1,10 @@
+{% extends baseTemplate %}
+
+{% set title = ('crud.title.list' ~ className)|trans ~ ' » ' ~ "crud.deleting"|trans ~ ": " ~ entity %}
+
+{% block content %}
+	<h4>{{ 'crud.deleteSubmit'|trans }}</h4>
+	<br/>
+
+	{{ formDelete.render()|raw }}
+{% endblock %}

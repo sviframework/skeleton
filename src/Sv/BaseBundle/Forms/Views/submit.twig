@@ -1,0 +1,8 @@
+<div class="form-group">
+	<div class="col-sm-offset-3 col-sm-10">
+		<button type="submit" class="btn btn-primary" {% if attr %}{% for k, v in attr %}{{ k }}="{{ v }}" {% endfor %}{% endif %}>{{ label|trans }}</button>
+		{% if cancel %}
+			<a class="btn" href="{{ cancel }}">Отмена</a>
+		{% endif %}
+	</div>
+</div>

@@ -1,0 +1,3 @@
+<?php
+	require_once __DIR__.'/../app/Svi/Application.php';
+	\Svi\Application::run($argv);
