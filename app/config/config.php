@@ -16,37 +16,6 @@
 		'settings' => [
 			'siteurl' => [
 				'title' =>  'Site URL',
-			],
-			'sitename' => [
-				'title' =>  'Название сайта',
-			],
-			'social.twitter' => [
-				'title' =>  'Твиттер',
-			],
-			'social.vk' => [
-				'title' =>  'Вконтакте',
-			],
-			'social.in' => [
-				'title' =>  'LinkedIn',
-			],
-			'social.fl' => [
-				'title' =>  'Freelance',
-			],
-			'social.email' => [
-				'title' =>  'Email',
-			],
-			'footer' => [
-				'title' =>  'Подпись в футере',
-			],
-			'phone' => [
-				'title' =>  'Номер телефона',
-			],
-			'contact' => [
-				'title' =>  'Содержимое страницы контактной информации',
-				'type' =>  'wysiwyg',
-			],
-			'folio_title' => [
-				'title' =>  'Заголовок страницы портфолио',
-			],
+			]
 		],
 	];
