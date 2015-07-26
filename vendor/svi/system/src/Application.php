@@ -124,7 +124,7 @@ class Application
 			$this->silex->register(new TwigServiceProvider(), [
 				'twig.path' => $this->getRootDir() . 'src',
 				'twig.options' => [
-						'cache' => $this->silex['debug'] ? false : $this->getRootDir().'app/cache',
+						'cache' => $this->silex['debug'] ? false : $this->getRootDir() . 'app/cache',
 					] + $this->getConfig()->get('twig'),
 			]);
 			$this->getSilex()['twig']->addExtension(new SilexTwigExtension($this));
@@ -216,6 +216,9 @@ class Application
 		return $this->logger;
 	}
 
+	/**
+	 * @return string Always returns current site dir with "/" in the end, so like /var/www/sample/www/sample.com/ will be returned
+	 */
 	public function getRootDir()
 	{
 		return dirname(dirname(__DIR__)) . '/./../../';
