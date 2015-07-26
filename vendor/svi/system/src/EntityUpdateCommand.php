@@ -43,7 +43,7 @@ class EntityUpdateCommand extends ConsoleCommand
 	{
 		foreach ($this->getApp()->getBundles()->getEntityClasses() as $c) {
 			$r = new \ReflectionClass($c);
-			if (!$r->isInterface()) {
+			if (!$r->isInterface() && !$r->isAbstract() && !$r->isTrait()) {
 				$entity = new $c();
 				$entity->getTableSchema();
 			}
