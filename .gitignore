@@ -10,6 +10,7 @@
 /web/files/*
 !web/files/.gitkeep
 !web/files/.htaccess
+composer.json
 composer.phar
 composer.lock
 /src/*
