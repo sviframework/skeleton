@@ -1,9 +1,8 @@
 <?php
 	return [
-		'Sv' => [
-			'Base',
-			'Crud',
-			'File',
-			'Mail',
-		],
+		'Svi\\Base\\Bundle',
+		'Svi\\Mail\\Bundle',
+		'Svi\\Crud\\Bundle',
+		'Svi\\File\\Bundle',
+		'Test\\TestBundle\\Bundle',
 	];
