@@ -70,7 +70,7 @@ class Application
 			]);
 			Entity::$connection = $this->silex['db'];
 		}
-		$this->initTwig();
+		$this->tryInitTwig();
 		if (!$this->console) {
 			$this->silex['session'] = $this->silex->share(function(){
 				return Session::getInstance($this);
@@ -118,7 +118,7 @@ class Application
 		}
 	}
 
-	public function initTwig()
+	public function tryInitTwig()
 	{
 		if ($this->getConfig()->get('twig')) {
 			$this->silex->register(new TwigServiceProvider(), [
