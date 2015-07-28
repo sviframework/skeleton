@@ -5,10 +5,10 @@ namespace Svi\Mail;
 class Bundle extends \Svi\Bundle
 {
 
-	protected function getManagers()
+	protected function getServices()
 	{
 		return [
-			'svimail' => 'Mail',
+			'manager.svimail' => 'MailManager',
 		];
 	}
 

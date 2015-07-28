@@ -5,11 +5,11 @@ namespace Svi\File;
 class Bundle extends \Svi\Bundle
 {
 
-	protected function getManagers()
+	protected function getServices()
 	{
 		return [
-			'svifile' => 'File',
-			'sviimage' => 'Image',
+			'manager.svifile' => 'FileManager',
+			'manager.sviimage' => 'ImageManager',
 		];
 	}
 

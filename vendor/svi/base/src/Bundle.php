@@ -5,12 +5,12 @@ namespace Svi\Base;
 class Bundle extends \Svi\Bundle
 {
 
-	protected function getManagers()
+	protected function getServices()
 	{
 		return [
-			'sviform' => 'Form',
-			'svisettings' => 'Settings',
-			'svialerts' => 'Alerts'
+			'manager.sviform' => 'FormManager',
+			'manager.svisettings' => 'SettingsManager',
+			'manager.svialerts' => 'AlertsManager'
 		];
 	}
 

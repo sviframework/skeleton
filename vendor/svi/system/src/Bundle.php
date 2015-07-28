@@ -12,7 +12,7 @@ abstract class Bundle
 	{
 		$this->app = $app;
 		$this->loadConfig();
-		$this->loadManagers();
+		$this->loadServices();
 	}
 
 	/**
@@ -95,7 +95,7 @@ abstract class Bundle
 		return array();
 	}
 
-	protected function getManagers()
+	protected function getServices()
 	{
 		return array();
 	}
@@ -112,12 +112,12 @@ abstract class Bundle
 		}
 	}
 
-	private function loadManagers()
+	private function loadServices()
 	{
 		$app = $this->app;
-		foreach ($this->getManagers() as $name => $class) {
-			$className = $this->getNamespace().'\\'.$class.'Manager';
-			$app->getSilex()['manager.' . $name] = $app->getSilex()->share(function() use ($className, $app) {
+		foreach ($this->getServices() as $name => $class) {
+			$className = $this->getNamespace().'\\'.$class;
+			$app->getSilex()[$name] = $app->getSilex()->share(function() use ($className, $app) {
 				return new $className($app);
 			});
 		}
