@@ -293,17 +293,9 @@ class Form
 		if (strpos($template, '/') !== false) {
 			$templatePath = $template;
 		} else {
-			$templatePath = ($this->getTemplatesPath() ? $this->getTemplatesPath() : $this->getNamespace() . '/Views') . '/' .$template;
+			$templatePath = ($this->getTemplatesPath() ? $this->getTemplatesPath() : 'svi/base/src/Forms/Views') . '/' .$template;
 		}
 		return $this->c->getApp()->getTwig()->render($templatePath . '.twig', $params);
-	}
-
-	protected function getNamespace()
-	{
-		if (empty($this->namespace)) {
-			$this->namespace = str_replace('\\', '/', substr(get_class($this), 0, strrpos(get_class($this), '\\')));
-		}
-		return $this->namespace;
 	}
 
 	/**

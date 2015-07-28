@@ -1,7 +1,7 @@
 <?php
 	return [
 		'crud.noItems' => 'Нет элементов для отображения',
-		'crud.title.listSvBaseBundleEntitySetting' => 'Настройки',
+		'crud.title.listSviBaseEntitySetting' => 'Настройки',
 		'crud.add' => 'Добавить элемент',
 		'crud.edit' => 'Редактировать',
 		'crud.save' => 'Сохранить',

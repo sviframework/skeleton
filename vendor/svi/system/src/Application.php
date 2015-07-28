@@ -122,10 +122,13 @@ class Application
 	{
 		if ($this->getConfig()->get('twig')) {
 			$this->silex->register(new TwigServiceProvider(), [
-				'twig.path' => $this->getRootDir() . 'src',
+				'twig.path' => [
+					$this->getRootDir() . 'src',
+					$this->getRootDir() . 'vendor',
+				],
 				'twig.options' => [
-						'cache' => $this->silex['debug'] ? false : $this->getRootDir() . 'app/cache',
-					] + $this->getConfig()->get('twig'),
+					'cache' => $this->silex['debug'] ? false : $this->getRootDir() . 'app/cache',
+				] + $this->getConfig()->get('twig'),
 			]);
 			$this->getSilex()['twig']->addExtension(new SilexTwigExtension($this));
 		}

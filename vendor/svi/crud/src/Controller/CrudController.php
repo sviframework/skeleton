@@ -125,7 +125,7 @@ abstract class CrudController extends Controller
 			->add('submit', 'submit', array(
 				'label' => 'crud.delete',
 				'cancel' => $request->query->has('back') ? $request->query->get('back') : false,
-				'template' => 'Sv/CrudBundle/Views/deleteSubmit',
+				'template' => 'svi/crud/src/Views/deleteSubmit',
 			));
 
 		if ($formDelete->handleRequest($request)->isValid()) {
@@ -444,25 +444,25 @@ abstract class CrudController extends Controller
 		];
 	}
 
-	protected function getDeleteTemplate() { return 'Sv/CrudBundle/Views/delete.twig'; }
+	protected function getDeleteTemplate() { return 'svi/crud/src/Views/delete.twig'; }
 
-	protected function getEditTemplate() { return 'Sv/CrudBundle/Views/edit.twig'; }
+	protected function getEditTemplate() { return 'svi/crud/src/Views/edit.twig'; }
 
-	protected function getFieldsTemplate() { return 'Sv/CrudBundle/Views/fields.twig'; }
+	protected function getFieldsTemplate() { return 'svi/crud/src/Views/fields.twig'; }
 
-	protected function getFilterFieldsTemplate() { return 'Sv/CrudBundle/Views/filter_fields.twig'; }
+	protected function getFilterFieldsTemplate() { return 'svi/crud/src/Views/filter_fields.twig'; }
 
-	protected function getIndexTemplate() { return 'Sv/CrudBundle/Views/index.twig'; }
+	protected function getIndexTemplate() { return 'svi/crud/src/Views/index.twig'; }
 
-	protected function getPaginatorTemplate() { return 'Sv/CrudBundle/Views/paginator.twig'; }
+	protected function getPaginatorTemplate() { return 'svi/crud/src/Views/paginator.twig'; }
 
-	protected function getSortableTemplate() { return 'Sv/CrudBundle/Views/sortable.twig'; }
+	protected function getSortableTemplate() { return 'svi/crud/src/Views/sortable.twig'; }
 
-	protected function getSortableItemsTemplate() { return 'Sv/CrudBundle/Views/subitems.twig'; }
+	protected function getSortableItemsTemplate() { return 'svi/crud/src/Views/subitems.twig'; }
 
-	protected function getTableTemplate() { return 'Sv/CrudBundle/Views/table.twig'; }
+	protected function getTableTemplate() { return 'svi/crud/src/Views/table.twig'; }
 
-	protected function getFieldTemplate() { return 'Sv/CrudBundle/Views/table_field.twig'; }
+	protected function getFieldTemplate() { return 'svi/crud/src/Views/table_field.twig'; }
 
 	/**
 	 * @return Entity
