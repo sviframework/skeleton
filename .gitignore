@@ -13,7 +13,6 @@
 composer.json
 composer.phar
 composer.lock
-/src/*
-!/src/.gitkeep
+/src/Test
 /vendor/*
-!vendor/svi
+!vendor/svgi
