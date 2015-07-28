@@ -4,7 +4,6 @@
 /app/logs/*
 !app/logs/.gitkeep
 /app/config/parameters.php
-/app/config/bundles.php
 /web/bundles/*
 !web/bundles/.gitkeep
 /web/files/*
@@ -15,4 +14,4 @@ composer.phar
 composer.lock
 /src/Test
 /vendor/*
-!vendor/svgi
+!vendor/svi
