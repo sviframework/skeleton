@@ -328,27 +328,34 @@ abstract class CrudController extends Controller
 
 		foreach ($data as $key => $value) {
 			if (!in_array($key, $exclude) && strpos($key, 'deletefile_') === false) {
-				$attr = $form->get($key)->getAttr();
-
-				if (array_key_exists('data-file', $attr)) {
-					if ($value) {
-						$uri = @$attr['data-uri'] ? $attr['data-uri'] : 'heap';
-						$md5 = md5($value->getFilename());
-						$uri .= '/' . substr($md5, 0, 2) . '/' . substr($md5, 2, 2);
-					} else {
-						$uri = null;
-					}
-
-					$entity->setFieldValue($key,
-						$this->c->getFileManager()->getNewFileUriFromField($entity->getFieldValue($key), $value, $uri,
-							@$data['deletefile_' . $key] ? true : false)
-					);
-				} else {
-					$entity->setFieldValue($key, $value);
-				}
+				$this->saveField($entity, $form, $key);
 			}
 		}
 		$entity->save();
+	}
+
+	protected function saveField(Entity $entity, Form $form, $key)
+	{
+		$data = $form->getData();
+		$value = $data[$key];
+		$attr = $form->get($key)->getAttr();
+
+		if (array_key_exists('data-file', $attr)) {
+			if ($value) {
+				$uri = @$attr['data-uri'] ? $attr['data-uri'] : 'heap';
+				$md5 = md5($value->getFilename());
+				$uri .= '/' . substr($md5, 0, 2) . '/' . substr($md5, 2, 2);
+			} else {
+				$uri = null;
+			}
+
+			$entity->setFieldValue($key,
+				$this->c->getFileManager()->getNewFileUriFromField($entity->getFieldValue($key), $value, $uri,
+					@$data['deletefile_' . $key] ? true : false)
+			);
+		} else {
+			$entity->setFieldValue($key, $value);
+		}
 	}
 
 	protected function getFileFieldAttributes($fileUri, $dir = null, $canDelete = true, $isImage = true)
