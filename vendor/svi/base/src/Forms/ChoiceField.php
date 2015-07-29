@@ -2,6 +2,8 @@
 
 namespace Svi\Base\Forms;
 
+use Svi\Base\Entity\SelectableInterface;
+
 class ChoiceField extends Field
 {
 
@@ -14,11 +16,17 @@ class ChoiceField extends Field
 	{
 		$choices = $this->getRequired() ? [] : [null => ''];
 		foreach ($this->getChoices() as $key => $value) {
-			if ($key === 0) {
-				$key = '0';
+			if ($value instanceof SelectableInterface) {
+				$key = $value->getKey();
+				$value = $value->getValue();
 			} else {
-				$key = '' . $key;
+				if ($key === 0) {
+					$key = '0';
+				} else {
+					$key = '' . $key;
+				}
 			}
+
 			$choices[] = [
 				'key' => $key,
 				'value' => $value,
