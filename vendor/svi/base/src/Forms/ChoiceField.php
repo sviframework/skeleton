@@ -12,7 +12,7 @@ class ChoiceField extends Field
 		return 'choice';
 	}
 
-	public function getViewParameters()
+	public function getChoicesForRender()
 	{
 		$choices = $this->getRequired() ? [] : [null => ''];
 		foreach ($this->getChoices() as $key => $value) {
@@ -27,14 +27,20 @@ class ChoiceField extends Field
 				}
 			}
 
-			$choices[] = [
+			$choices[$key] = [
 				'key' => $key,
 				'value' => $value,
 				'selected' => $key === $this->getData(),
 			];
 		}
+
+		return $choices;
+	}
+
+	public function getViewParameters()
+	{
 		return parent::getViewParameters() + [
-			'choices' => $choices,
+			'choices' => $this->getChoicesForRender(),
 		];
 	}
 
@@ -42,7 +48,7 @@ class ChoiceField extends Field
 	{
 		parent::validateData();
 		if (!$this->hasErrors()) {
-			if (!array_key_exists($this->getData(), $this->getChoices())) {
+			if (!array_key_exists($this->getData(), $this->getChoicesForRender())) {
 				if ($this->getData() !== null && $this->getData() !== '') {
 					$this->addError('forms.choicesIncorrect');
 				}
