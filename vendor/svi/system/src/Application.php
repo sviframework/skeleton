@@ -45,12 +45,12 @@ class Application
 		}
 
 		umask(0000);
-		$loader = require $this->getRootDir() . 'vendor/autoload.php';
+		$loader = require $this->getRootDir() . '/vendor/autoload.php';
 		$this->silex = new \Silex\Application();
 
-		$loader->add('', $this->getRootDir() . 'src');
+		$loader->add('', $this->getRootDir() . '/src');
 
-		require_once $this->getRootDir() . 'app/config/config.php';
+		require_once $this->getRootDir() . '/app/config/config.php';
 		$this->config = Config::getInstance($this);
 		$this->silex['debug'] = $this->config->get('debug');
 
@@ -123,11 +123,11 @@ class Application
 		if ($this->getConfig()->get('twig')) {
 			$this->silex->register(new TwigServiceProvider(), [
 				'twig.path' => [
-					$this->getRootDir() . 'src',
-					$this->getRootDir() . 'vendor',
+					$this->getRootDir() . '/src',
+					$this->getRootDir() . '/vendor',
 				],
 				'twig.options' => [
-					'cache' => $this->silex['debug'] ? false : $this->getRootDir() . 'app/cache',
+					'cache' => $this->silex['debug'] ? false : $this->getRootDir() . '/app/cache',
 				] + $this->getConfig()->get('twig'),
 			]);
 			$this->getSilex()['twig']->addExtension(new SilexTwigExtension($this));
@@ -224,7 +224,7 @@ class Application
 	 */
 	public function getRootDir()
 	{
-		return dirname(dirname(__DIR__)) . '/./../../';
+		return dirname(dirname(dirname(dirname(__DIR__))));
 	}
 
 	/**

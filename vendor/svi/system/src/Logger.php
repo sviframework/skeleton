@@ -30,7 +30,7 @@ class Logger
 
 	public function write($text, $logFile = 'error')
 	{
-		$file = fopen($this->app->getRootDir() . 'app/logs/' . $logFile . '.log', 'a');
+		$file = fopen($this->app->getRootDir() . '/app/logs/' . $logFile . '.log', 'a');
 		fwrite($file, date('Y-m-d [H:i:s]', time()) . ': ' . $text . "\n");
 		fclose($file);
 	}

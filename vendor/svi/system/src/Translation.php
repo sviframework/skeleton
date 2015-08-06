@@ -48,7 +48,7 @@ class Translation
 		}
 
 		if (!$this->app->getConfig()->get('debug')) {
-			$cacheFile = $this->app->getRootDir().'app/cache/translations_' . $this->locale . '.php';
+			$cacheFile = $this->app->getRootDir().'/app/cache/translations_' . $this->locale . '.php';
 			if (file_exists($cacheFile)) {
 				$this->translations = include $cacheFile;
 			} else {

@@ -27,13 +27,12 @@ class AssetsInstallCommand extends ConsoleCommand
 		$this->writeLn('Installing assets:');
 		$this->writeLn();
 
+		chdir($assetsDir);
+		/** @var Bundle $b */
 		foreach ($this->getApp()->getBundles()->getBundles() as $b) {
 			$dir = $b->getDir() . '/Public';
-			$dest = $assetsDir . '/' . strtolower($b->getName());
+			$dest = strtolower($b->getName());
 			if (file_exists($dir)) {
-				if (file_exists($dest)) {
-					unlink($dest);
-				}
 				symlink($dir, $dest);
 				$this->writeLn(str_replace($this->getApp()->getRootDir() . '/', '', $dir) . ' => ' .
 					str_replace($this->getApp()->getRootDir() . '/', '', $dest));
@@ -41,4 +40,4 @@ class AssetsInstallCommand extends ConsoleCommand
 		}
 	}
 
-} 
+}

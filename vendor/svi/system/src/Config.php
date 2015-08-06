@@ -11,7 +11,7 @@ class Config
 	private function __construct(Application $app)
 	{
 		$this->app = $app;
-		$this->config = include($app->getRootDir() . 'app/config/config.php');
+		$this->config = include($app->getRootDir() . '/app/config/config.php');
 	}
 
 	private function __clone() {}

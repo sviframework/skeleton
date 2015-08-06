@@ -4,7 +4,7 @@ namespace Svi\Base\Controller;
 
 use Svi\Base\Container;
 use Svi\Application;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Controller extends \Svi\Controller
 {
@@ -40,7 +40,7 @@ class Controller extends \Svi\Controller
 
 	protected function json(array $data = array())
 	{
-		return new Response(json_encode($data));
+		return new JsonResponse($data);
 	}
 
 } 
