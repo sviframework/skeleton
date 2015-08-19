@@ -36,7 +36,9 @@ abstract class UserManager extends ContainerAware
 		if ($this->c->getCookies()->has('REMEMBERME')) {
 			$cookie = mcrypt_decrypt(MCRYPT_BLOWFISH, $this->getParameter('secret'), base64_decode($this->c->getCookies()->get('REMEMBERME')), MCRYPT_MODE_ECB);
 			$data = explode('[|]', $cookie);
-			return $data[1];
+			if (array_key_exists(1, $data)) {
+				return $data[1];
+			}
 		}
 
 		return null;
