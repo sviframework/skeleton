@@ -356,7 +356,8 @@ abstract class Entity
 	{
 		$entity = new static();
 		$className = get_class($entity);
-		$qb->select(implode(', ', $entity->getDbColumnNames()))->from($entity->getTableName(), '');
+		$qb->resetQueryPart('from');
+		$qb->select(implode(', ', $entity->getDbColumnNames()))->from($entity->getTableName(), 'e');
 
 		$cacheKey = null;
 		if (!$noCache) {
