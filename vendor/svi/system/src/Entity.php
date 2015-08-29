@@ -349,7 +349,7 @@ abstract class Entity
 	{
 		$result = self::fetch($qb, $noCache);
 
-		return @$result[0];
+		return array_key_exists(0, $result) ? $result[0] : null;
 	}
 
 	public static function fetch(\Doctrine\DBAL\Query\QueryBuilder $qb, $noCache = null)
@@ -357,7 +357,11 @@ abstract class Entity
 		$entity = new static();
 		$className = get_class($entity);
 		$qb->resetQueryPart('from');
-		$qb->select(implode(', ', $entity->getDbColumnNames()))->from($entity->getTableName(), 'e');
+		$columnNames = [];
+		foreach ($entity->getDbColumnNames() as $n) {
+			$columnNames[] = 'e.' . $n;
+		}
+		$qb->select(implode(', ', $columnNames))->from($entity->getTableName(), 'e');
 
 		$cacheKey = null;
 		if (!$noCache) {
