@@ -18,7 +18,7 @@ class EmailField extends Field
 	{
 		parent::validateData();
 		if (!$this->hasErrors()) {
-			if (!Email::validate($this->getData())) {
+			if ($this->getData() && !Email::validate($this->getData())) {
 				$this->addError('forms.emailError');
 			}
 		}
