@@ -56,13 +56,9 @@ class Application
 
 		$this->logger = Logger::getInstance($this);
 
-		if ($this->config->get('debug')) {
-			ErrorHandler::register(E_ALL, true);
-			ExceptionHandler::register(true);
-		} else {
-			set_error_handler([$this->logger, 'handleError'], E_ALL ^ E_NOTICE);
-			$this->silex->error([$this->logger, 'handleException']);
-		}
+		ErrorHandler::register();
+		$handler = ExceptionHandler::register($this->config->get('debug'));
+		$handler->setHandler([$this->logger, 'handleException']);
 
 		if ($this->config->get('db')) {
 			$this->silex->register(new DoctrineServiceProvider(), [

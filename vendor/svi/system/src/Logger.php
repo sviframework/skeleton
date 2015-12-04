@@ -2,6 +2,9 @@
 
 namespace Svi;
 
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
 class Logger
 {
 	private static $_instance;
@@ -60,9 +63,9 @@ class Logger
 		return true;
 	}
 
-	public function handleException(\Exception $e, $code = null)
+	public function handleException(\Exception $e)
 	{
-		if ($code !== null && ($code == 404 || $code == 403)) {
+		if ($e instanceof AccessDeniedHttpException || $e instanceof NotFoundHttpException) {
 			return;
 		}
 		$this->write(get_class($e) . ' with message "' . $e->getMessage() . '"' . ' in ' . $e->getFile() . ':' . $e->getLine()
