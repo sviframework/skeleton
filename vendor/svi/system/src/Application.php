@@ -84,8 +84,8 @@ class Application
 
 		if (!$this->console) {
 			$this->silex->register(new ServiceControllerServiceProvider());
-			$this->routing = Routing::getInstance($this);
 		}
+		$this->routing = Routing::getInstance($this);
 
 		if ($this->console) {
 			$this->console = Console::getInstance($this, $argv);

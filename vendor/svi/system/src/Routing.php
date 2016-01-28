@@ -58,7 +58,7 @@ class Routing
 							$post->assert($key, $value);
 						}
 					}
-					$this->add($name, $route['route']);
+					$this->add($name, ['url' => $route['route'], 'controller' => $className . '::' . $route['method']]);
 				}
 			}
 		}
@@ -76,7 +76,7 @@ class Routing
 		}
 		if ($parameters) {
 			foreach ($parameters as $key => $value) {
-				$route = str_replace('{' . $key . '}', $value, $route, $count);
+				$route = str_replace('{' . $key . '}', $value, $route['url'], $count);
 			}
 		}
 		$matches = array();
@@ -89,6 +89,14 @@ class Routing
 		}
 
 		return $route;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getAllRoutes()
+	{
+		return $this->routes;
 	}
 
 } 

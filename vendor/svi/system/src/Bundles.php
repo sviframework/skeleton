@@ -28,6 +28,9 @@ class Bundles
 		return self::$_instance;
 	}
 
+	/**
+	 * @return Bundle[]
+	 */
 	public function getBundles()
 	{
 		return $this->bundles;

@@ -19,6 +19,7 @@ class Console
 
 		$this->addCommand(new EntityUpdateCommand($this->app));
 		$this->addCommand(new AssetsInstallCommand($this->app));
+		$this->addCommand(new RoutesListCommand($this->app));
 		foreach ($this->app->getBundles()->getCommandClasses() as $c) {
 			$this->addCommand(new $c($this->app));
 		}
