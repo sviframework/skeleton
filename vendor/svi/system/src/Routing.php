@@ -71,12 +71,12 @@ class Routing
 
 	public function getUrl($name, array $parameters = null, $absolute = false, $protocol = null)
 	{
-		if (!($route = @$this->routes[$name])) {
+		if (!($route = @$this->routes[$name]['url'])) {
 			throw new \Exception('There is no route with name ' . $name);
 		}
 		if ($parameters) {
 			foreach ($parameters as $key => $value) {
-				$route = str_replace('{' . $key . '}', $value, $route['url'], $count);
+				$route = str_replace('{' . $key . '}', $value, $route, $count);
 			}
 		}
 		$matches = array();
