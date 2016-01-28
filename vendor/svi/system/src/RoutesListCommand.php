@@ -17,7 +17,12 @@ class RoutesListCommand extends ConsoleCommand
 
 	public function execute(array $args)
 	{
-		var_dump($this->getApp()->getRouting()->getAllRoutes());
+		$routes = $this->getApp()->getRouting()->getAllRoutes();
+		ksort($routes);
+
+		foreach ($routes as $key => $r) {
+			$this->writeLn($key . $r['url'] . ':' . $r['controller']);
+		}
 	}
 
 }

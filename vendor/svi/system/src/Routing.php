@@ -42,13 +42,13 @@ class Routing
 			});
 			foreach ($routes as $name => $route) {
 				if (is_numeric($name)) {
-					$name = '_route' . rand() . microtime();
+					$name = '_route' . rand() . microtime(true);
 				}
 				if (is_string($route)) {
 					$parts = explode(':', $route);
 					$app->getSilex()->get($parts[0], $shareName . ':' . $parts[1] . 'Action');
 					$app->getSilex()->post($parts[0], $shareName . ':' . $parts[1] . 'Action');
-					$this->add($name, $parts[0]);
+					$this->add($name, ['url' => $parts[0], 'controller' => $className . '::' . $parts[1]]);
 				} elseif (is_array($route)) {
 					$get = $app->getSilex()->get($route['route'], $shareName . ':' . $route['method'] . 'Action');
 					$post = $app->getSilex()->post($route['route'], $shareName . ':' . $route['method'] . 'Action');
