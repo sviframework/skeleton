@@ -18,7 +18,7 @@ class SendSpoolCommand extends ConsoleCommand
 
 	public function execute(array $args)
 	{
-		$this->getApp()->get('manager.svmail')->sendSpool();
+		$this->getApp()->get('manager.svimail')->sendSpool();
 	}
 
 } 
