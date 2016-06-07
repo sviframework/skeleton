@@ -3,6 +3,8 @@
 !app/cache/.gitkeep
 /app/logs/*
 !app/logs/.gitkeep
+/app/config/config.php
+/app/config/bundles.php
 /app/config/parameters.php
 /web/bundles/*
 !web/bundles/.gitkeep
