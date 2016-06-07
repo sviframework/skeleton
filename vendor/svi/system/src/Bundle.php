@@ -117,9 +117,9 @@ abstract class Bundle
 		$app = $this->app;
 		foreach ($this->getServices() as $name => $class) {
 			$className = $this->getNamespace().'\\'.$class;
-			$app->getSilex()[$name] = $app->getSilex()->share(function() use ($className, $app) {
+			$app->getSilex()[$name] = function() use ($className, $app) {
 				return new $className($app);
-			});
+			};
 		}
 	}
 

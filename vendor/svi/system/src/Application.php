@@ -68,17 +68,17 @@ class Application
 		}
 		$this->tryInitTwig();
 		if (!$this->console) {
-			$this->silex['session'] = $this->silex->share(function(){
+			$this->silex['session'] = function(){
 				return Session::getInstance($this);
-			});
+			};
 
-			$this->silex['cookies'] = $this->silex->share(function(){
+			$this->silex['cookies'] = function(){
 				return Cookies::getInstance($this);
-			});
+			};
 		}
-		$this->silex['translation'] = $this->silex->share(function(){
+		$this->silex['translation'] = function(){
 			return Translation::getInstance($this);
-		});
+		};
 
 		$this->bundles = Bundles::getInstance($this);
 

@@ -37,9 +37,9 @@ class Routing
 		foreach ($bundleRoutes as $controller => $routes) {
 			$shareName = 'controller.' . $bundle->getName() . '.' . $controller;
 			$className = $bundle->getNamespace() . '\\Controller\\' . $controller . 'Controller';
-			$app->getSilex()[$shareName] = $this->app->getSilex()->share(function() use ($app, $className) {
+			$app->getSilex()[$shareName] = function() use ($app, $className) {
 				return new $className($app);
-			});
+			};
 			foreach ($routes as $name => $route) {
 				if (is_numeric($name)) {
 					$name = '_route' . rand() . microtime(true);
