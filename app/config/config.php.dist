@@ -11,7 +11,7 @@
 		'bundles' => include(__DIR__.'/./bundles.php'),
 		'db' => $getParameter('db', null),
 		'twig' => $getParameter('twig', false),
-		'assetsVersion' => $getParameter('assetsVersion'),
+		'assetsVersion' => $getParameter('assetsVersion', 'v1'),
 		'locale' => $getParameter('locale', 'ru'),
 		'settings' => $getParameter('settings', []),
 	];
