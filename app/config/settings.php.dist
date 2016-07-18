@@ -1,20 +1,2 @@
 <?php
-return [
-	'copyright'        => 'Копирайт',
-	'footer_phone'     => 'Телефон в футере',
-	'social_vk'        => 'Вконтакте',
-	'social_behance'   => 'Behance',
-	'social_linked'    => 'Linked In',
-	'social_youtube'   => 'YouTube',
-	'social_twitter'   => 'Twitter',
-	'social_facebook'  => 'Facebook',
-	'social_instagram' => 'Instagram',
-	'social_pinterest' => 'Pinterest',
-	'showreel_code'    => 'Код showreel',
-	'about_title'      => 'Заголовок карты',
-	'about_subtitle'   => 'Подзаголовок карты',
-	'about_text'       => 'Текст карты',
-	'video_back_texts' => 'Меняющиеся тексты на первом экране',
-	'contact_block'    => 'Текст в форме контактов',
-	'contact_mails'    => 'Email\'ы для получения сообщений с новой строки',
-];
+return [];
