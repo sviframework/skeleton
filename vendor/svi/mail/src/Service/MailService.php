@@ -1,12 +1,12 @@
 <?php
 
-namespace Svi\Mail;
+namespace Svi\Mail\Service;
 
 use Svi\Application;
 use Svi\Base\Container;
 use Svi\Base\ContainerAware;
 
-class MailManager extends ContainerAware
+class MailService extends ContainerAware
 {
 	private $swift = null;
 

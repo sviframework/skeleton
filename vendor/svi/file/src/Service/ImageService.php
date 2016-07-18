@@ -1,11 +1,11 @@
 <?php
 
-namespace Svi\File;
+namespace Svi\File\Service;
 
 use Svi\Base\ContainerAware;
 use Svi\File\Classes\File;
 
-class ImageManager extends ContainerAware
+class ImageService extends ContainerAware
 {
 
 	/**

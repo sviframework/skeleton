@@ -1,8 +1,10 @@
 <?php
 
-namespace Svi\Base;
+namespace Svi\Base\Service;
 
-abstract class UserManager extends ContainerAware
+use Svi\Base\ContainerAware;
+
+abstract class UserService extends ContainerAware
 {
 
 	public function logout()

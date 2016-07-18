@@ -1,8 +1,10 @@
 <?php
 
-namespace Svi\Base;
+namespace Svi\Base\Service;
 
-class AlertsManager extends ContainerAware
+use Svi\Base\ContainerAware;
+
+class AlertsService extends ContainerAware
 {
 
 	public function addAlert($type, $text)

@@ -1,9 +1,10 @@
 <?php
-namespace Svi\Base;
+namespace Svi\Base\Service;
 
+use Svi\Base\ContainerAware;
 use Svi\Base\Forms\Form;
 
-class FormManager extends ContainerAware
+class FormService extends ContainerAware
 {
 
 	public function createForm(array $parameters = [])

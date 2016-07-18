@@ -8,9 +8,9 @@ class Bundle extends \Svi\Bundle
 	protected function getServices()
 	{
 		return [
-			'manager.sviform' => 'FormManager',
-			'manager.svisettings' => 'SettingsManager',
-			'manager.svialerts' => 'AlertsManager'
+			'service.sviform' => 'Service\FormService',
+			'service.svisettings' => 'Service\SettingsService',
+			'service.svialerts' => 'Service\AlertsService'
 		];
 	}
 

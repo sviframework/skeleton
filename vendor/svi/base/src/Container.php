@@ -2,50 +2,53 @@
 
 namespace Svi\Base;
 
-use Svi\File\FileManager;
-use Svi\File\ImageManager;
+use Svi\Base\Service\AlertsService;
+use Svi\Base\Service\FormService;
+use Svi\Base\Service\SettingsService;
+use Svi\File\Service\FileService;
+use Svi\File\Service\ImageService;
 
 class Container extends \Svi\Container
 {
 
 	/**
-	 * @return FormManager
+	 * @return FormService
 	 */
-	public function getFormManager()
+	public function getFormService()
 	{
-		return $this->getApp()->get('manager.sviform');
+		return $this->getApp()->get('service.sviform');
 	}
 
 	/**
-	 * @return SettingsManager
+	 * @return SettingsService
 	 */
-	public function getSettingsManager()
+	public function getSettingsService()
 	{
-		return $this->getApp()->get('manager.svisettings');
+		return $this->getApp()->get('service.svisettings');
 	}
 
 	/**
-	 * @return AlertsManager
+	 * @return AlertsService
 	 */
-	public function getAlertsManager()
+	public function getAlertsService()
 	{
-		return $this->getApp()->get('manager.svialerts');
+		return $this->getApp()->get('service.svialerts');
 	}
 
 	/**
-	 * @return FileManager
+	 * @return FileService
 	 */
-	public function getFileManager()
+	public function getFileService()
 	{
-		return $this->getApp()->get('manager.svifile');
+		return $this->getApp()->get('service.svifile');
 	}
 
 	/**
-	 * @return ImageManager
+	 * @return ImageService
 	 */
-	public function getImageManager()
+	public function getImageService()
 	{
-		return $this->getApp()->get('manager.sviimage');
+		return $this->getApp()->get('service.sviimage');
 	}
 
 } 

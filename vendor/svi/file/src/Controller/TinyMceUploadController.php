@@ -22,7 +22,7 @@ abstract class TinyMceUploadController extends Controller
 		$result = false;
 
 		if ($form->handleRequest($request)->isValid()) {
-			$file = new File($this->c->getFileManager()->uploadFile($form->get('upload')->getData(), 'uploaded_images/' . date('Ym')));
+			$file = new File($this->c->getFileService()->uploadFile($form->get('upload')->getData(), 'uploaded_images/' . date('Ym')));
 			$result = $file->getUrl();
 		}
 

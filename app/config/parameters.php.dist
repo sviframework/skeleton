@@ -27,5 +27,5 @@
 			'spoolMessageLimit' => 10,                // Used only if spool is setted
 		],
 		'secret' => 'GENERATE THIS KEY',
-		'settings' => [],
+		'siteurl' => 'example.com',
 	);

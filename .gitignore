@@ -6,6 +6,7 @@
 /app/config/config.php
 /app/config/bundles.php
 /app/config/parameters.php
+/app/config/settings.php
 /web/bundles/*
 !web/bundles/.gitkeep
 /web/files/*

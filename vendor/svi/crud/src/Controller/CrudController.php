@@ -131,7 +131,7 @@ abstract class CrudController extends Controller
 		if ($formDelete->handleRequest($request)->isValid()) {
 			if ($formDelete->get('delete')->getData() == 'delete') {
 				$this->delete($entity);
-				$this->c->getAlertsManager()->addAlert('success', $this->c->getApp()->getTranslation()->trans('crud.success.delete'));
+				$this->c->getAlertsService()->addAlert('success', $this->c->getApp()->getTranslation()->trans('crud.success.delete'));
 
 				return $this->crudRedirect();
 			}
@@ -175,7 +175,7 @@ abstract class CrudController extends Controller
 			if ($form->isValid()) {
 				$this->save($entity, $form, array());
 
-				$this->c->getAlertsManager()->addAlert('success', $add ? $this->c->getApp()->getTranslation()->trans('crud.success.add') :
+				$this->c->getAlertsService()->addAlert('success', $add ? $this->c->getApp()->getTranslation()->trans('crud.success.add') :
 					$this->c->getApp()->getTranslation()->trans('crud.success.edit'));
 
 				return $this->crudRedirect();
@@ -308,7 +308,7 @@ abstract class CrudController extends Controller
 
 	protected function isSortable() {return false;}
 
-	protected function buildForm(Form $form, $entity)
+	protected function buildForm(Form $form, Entity $entity)
 	{
 		throw new \Exception('function buildForm not yet implemented in child class');
 	}
@@ -350,7 +350,7 @@ abstract class CrudController extends Controller
 			}
 
 			$entity->setFieldValue($key,
-				$this->c->getFileManager()->getNewFileUriFromField($entity->getFieldValue($key), $value, $uri,
+				$this->c->getFileService()->getNewFileUriFromField($entity->getFieldValue($key), $value, $uri,
 					@$data['deletefile_' . $key] ? true : false)
 			);
 		} else {
@@ -366,7 +366,7 @@ abstract class CrudController extends Controller
 			$attr['data-delete'] = true;
 		}
 		if ($fileUri && $isImage) {
-			$attr['data-image'] = $this->c->getImageManager()->getImagePath($fileUri, 120, 80);
+			$attr['data-image'] = $this->c->getImageService()->getImagePath($fileUri, 120, 80);
 		}
 		if ($dir) {
 			$attr['data-uri'] = $dir;

@@ -1,11 +1,11 @@
 <?php
 
-namespace Svi\Base;
+namespace Svi\Base\Service;
 
 use Svi\Base\ContainerAware;
 use Svi\Base\Entity\Setting;
 
-class SettingsManager extends ContainerAware
+class SettingsService extends ContainerAware
 {
 	private $allSettings;
 
@@ -25,10 +25,7 @@ class SettingsManager extends ContainerAware
 	{
 		$settings = $this->c->getConfig()->get('settings');
 
-		$type = @$settings[$key]['type'];
-		if (!$type) {
-			$type = 'textarea';
-		}
+		$type = is_array($settings[$key]) && isset($settings[$key]['type']) ? $settings[$key]['type'] : 'textarea';
 
 		return $type;
 	}
@@ -53,11 +50,12 @@ class SettingsManager extends ContainerAware
 		}
 	}
 
-	public function get($key)
+	public function get($key, $default = null)
 	{
+		$key = strtolower($key);
 		$this->fetchAllSettings();
 
-		return @$this->allSettings[strtolower($key)];
+		return isset($this->allSettings[$key]) ? $this->allSettings[strtolower($key)] : $default;
 	}
 
 	public function set($key, $value)

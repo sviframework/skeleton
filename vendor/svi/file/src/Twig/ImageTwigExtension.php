@@ -35,7 +35,7 @@ class ImageTwigExtension extends \Twig_Extension
 
 	public function imageResizeFunction($image, $width, $height, $mode = 0)
 	{
-		return $this->app->get('manager.sviimage')->getImagePath($image, $width, $height, $mode);
+		return $this->app->get('service.sviimage')->getImagePath($image, $width, $height, $mode);
 	}
 
 }

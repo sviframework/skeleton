@@ -20,7 +20,7 @@ class Controller extends \Svi\Controller
 
 	function createForm(array $parameters = [])
 	{
-		return $this->c->getFormManager()->createForm($parameters);
+		return $this->c->getFormService()->createForm($parameters);
 	}
 
 	protected function jsonError($message = '', array $data = array())

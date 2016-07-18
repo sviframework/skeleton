@@ -1,13 +1,13 @@
 <?php
 
-namespace Svi\File;
+namespace Svi\File\Service;
 
 use Svi\Base\ContainerAware;
 use Svi\Base\Utils\Utils;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
-class FileManager extends ContainerAware
+class FileService extends ContainerAware
 {
 
 	public function getNewFileUriFromField($oldValue, UploadedFile $field = null, $destDir = null, $delete = false)

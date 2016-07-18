@@ -2,16 +2,23 @@
 
 namespace Svi;
 
+use \Doctrine\DBAL\Connection;
+use \Doctrine\DBAL\Schema\Column;
+use \Doctrine\DBAL\Schema\Schema;
+use \Doctrine\DBAL\Schema\Table;
+use \Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\DBAL\Types\Type;
+
 /**
  * reserved: $fields, getFields, getFieldValue
  */
 abstract class Entity
 {
 	static private $cache = array();
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
+	/** @var Connection $connection */
 	static public $connection;
+	private $loadedFormDb = false;
+	private $loadedData = [];
 
 	function __construct(array $data = null)
 	{
@@ -32,14 +39,16 @@ abstract class Entity
 	}
 
 	/**
-	 * @return \Doctrine\DBAL\Schema\Table
+	 * @return Table
+	 * @throws \Exception
 	 */
 	final public function getTableSchema()
 	{
 		if (!isset(self::$cache['schema'])) {
-			self::$cache['schema'] = new \Doctrine\DBAL\Schema\Schema();
+			self::$cache['schema'] = new Schema();
 		}
 		if (!isset(self::$cache[get_class($this)]['table'])) {
+			/** @var \Doctrine\DBAL\Schema\Table $table */
 			$table = self::$cache['schema']->createTable($this->getTableName());
 			self::$cache[get_class($this)]['table'] = $table;
 
@@ -95,6 +104,7 @@ abstract class Entity
 				$table->addIndex($cols);
 			}
 			foreach ($this->getForeigners() as $entity => $params) {
+				/** @var Entity $entity */
 				$entity = new $entity();
 				$table->addForeignKeyConstraint($entity->getTableSchema(),
 					is_array($params[0]) ? $params[0] : array($params[0]),
@@ -113,6 +123,8 @@ abstract class Entity
 
 	/**
 	 * Return schemas in like that: classFieldName => Column schema
+	 * @return Column[]
+	 * @throws \Exception
 	 */
 	final public function getColumnsSchemas()
 	{
@@ -200,10 +212,11 @@ abstract class Entity
 
 	/**
 	 * Returns array which used for update or insert SQL operations
-	 *
+	 * 
+	 * @param bool $onlyChanged
 	 * @return array
 	 */
-	final public function getDataArray()
+	final public function getDataArray($onlyChanged = false, $updateLoadedData = false)
 	{
 		$result = array();
 
@@ -215,6 +228,19 @@ abstract class Entity
 				} else {
 					$value = serialize($value);
 				}
+			}
+			if ($onlyChanged && array_key_exists($schema->getName(), $this->loadedData)) {
+				if ($schema->getType() == 'Boolean') {
+					if ($value === ($this->loadedData[$schema->getName()] ? true : false)) {
+						continue;
+					}
+				}
+				if ($value === $this->loadedData[$schema->getName()]) {
+					continue;
+				}
+			}
+			if ($updateLoadedData) {
+				$this->loadedData[$schema->getName()] = $value;
 			}
 			if (!$value) {
 				if ($value === false) {
@@ -231,6 +257,8 @@ abstract class Entity
 
 	/**
 	 * Returns field value by class private field name
+	 * @param $fieldName
+	 * @return mixed
 	 */
 	final public function getFieldValue($fieldName)
 	{
@@ -243,7 +271,6 @@ abstract class Entity
 	 * Gets class field value by DB field name
 	 *
 	 * @param $dbFieldName
-	 * @param $value
 	 * @return null
 	 */
 	final public function getFieldValueByDbKey($dbFieldName)
@@ -258,7 +285,9 @@ abstract class Entity
 	}
 
 	/**
-	 * Sets field value by class private field name
+	 * @param $fieldName
+	 * @param $value
+	 * @return mixed
 	 */
 	final public function setFieldValue($fieldName, $value)
 	{
@@ -272,7 +301,7 @@ abstract class Entity
 	 *
 	 * @param $dbFieldName
 	 * @param $value
-	 * @return null
+	 * @throws \Exception
 	 */
 	final public function setFieldValueByDbKey($dbFieldName, $value)
 	{
@@ -283,11 +312,13 @@ abstract class Entity
 		$fieldName = self::$cache[get_class($this)]['db_to_field'][$dbFieldName];
 		$method = 'set' . ucfirst($fieldName);
 
-		if (self::$cache[get_class($this)]['columns'][$fieldName]->getType() == 'Array') {
+		/** @var Column $columnSchema */
+		$columnSchema = self::$cache[get_class($this)]['columns'][$fieldName];
+		if ($columnSchema->getType() == 'Array') {
 			if (!is_array($value)) {
 				$value = $value ? unserialize($value) : [];
 			}
-		} elseif (self::$cache[get_class($this)]['columns'][$fieldName]->getType() == 'Boolean') {
+		} elseif ($columnSchema->getType() == 'Boolean') {
 			$value = $value ? true : false;
 		}
 
@@ -302,9 +333,10 @@ abstract class Entity
 	 */
 	final public function fillByData(array $data)
 	{
+		$this->loadedData = $data;
 		foreach ($data as $key => $value) {
 			if ($key == $this->getIdColumnName()) {
-				$this->thisEntityWasLoadedFromDb = true;
+				$this->loadedFormDb = true;
 			}
 			$this->setFieldValueByDbKey($key, $value);
 		}
@@ -312,47 +344,53 @@ abstract class Entity
 		return $this;
 	}
 
-	public function save(\Doctrine\DBAL\Connection $connection = null)
+	public function save(Connection $connection = null)
 	{
 		if (!$connection) {
 			$connection = self::$connection;
 		}
-		if (@$this->thisEntityWasLoadedFromDb) {
-			$connection->update($this->getTableName(), $this->getDataArray(),
-				array($this->getIdColumnName() => $this->getFieldValue($this->getIdFieldName())));
+		if ($this->loadedFormDb) {
+			$data = $this->getDataArray(true, true);
+			if (count($data)) {
+				$connection->update($this->getTableName(), $data, [$this->getIdColumnName() => $this->getFieldValue($this->getIdFieldName())]);
+			}
 		} else {
-			$connection->insert($this->getTableName(), $this->getDataArray());
+			$data = $this->getDataArray(false, true);
+			if (count($data)) {
+				$connection->insert($this->getTableName(), $data);
+			}
 			$this->setFieldValue($this->getIdFieldName(), $connection->lastInsertId());
 		}
 		self::$cache[get_class($this)]['fetch'] = [];
-		$this->thisEntityWasLoadedFromDb = true;
+		$this->loadedFormDb = true;
 
 		return $this;
 	}
 
-	public function delete(\Doctrine\DBAL\Connection $connection = null)
+	public function delete(Connection $connection = null)
 	{
 		if (!$connection) {
 			$connection = self::$connection;
 		}
-		if (@$this->thisEntityWasLoadedFromDb) {
+		if ($this->loadedFormDb) {
 			$connection->delete($this->getTableName(), array($this->getIdColumnName() => $this->getFieldValue($this->getIdFieldName())));
 			self::$cache[get_class($this)]['fetch'] = [];
 		}
 	}
 
 	/**
-	 * @param \Doctrine\DBAL\Query\QueryBuilder $qb
+	 * @param QueryBuilder $qb
+	 * @param null $noCache
 	 * @return $this|null
 	 */
-	public static function fetchOne(\Doctrine\DBAL\Query\QueryBuilder $qb, $noCache = null)
+	public static function fetchOne(QueryBuilder $qb, $noCache = null)
 	{
 		$result = self::fetch($qb, $noCache);
 
 		return array_key_exists(0, $result) ? $result[0] : null;
 	}
 
-	public static function fetch(\Doctrine\DBAL\Query\QueryBuilder $qb, $noCache = null)
+	public static function fetch(QueryBuilder $qb, $noCache = null)
 	{
 		$entity = new static();
 		$className = get_class($entity);
@@ -376,7 +414,7 @@ abstract class Entity
 				return self::$cache[$className]['fetch'][$cacheKey];
 			}
 		}
-		$result = array();
+		$result = [];
 		$items = $qb->execute()->fetchAll();
 		if (count($items)) {
 			foreach ($items as $e) {
@@ -401,14 +439,14 @@ abstract class Entity
 		return $result;
 	}
 
-	public static function findOneBy(array $criteria = [], array $orderBy = null, $noCache = null, \Doctrine\DBAL\Connection $connection = null)
+	public static function findOneBy(array $criteria = [], array $orderBy = null, $noCache = null, Connection $connection = null)
 	{
 		$result = self::findBy($criteria, $orderBy, 1, null, $noCache, $connection);
 
 		return @$result[0];
 	}
 
-	public static function findBy(array $criteria = [], array $orderBy = null, $limit = null, $offset = null, $noCache = null, \Doctrine\DBAL\Connection $connection = null)
+	public static function findBy(array $criteria = [], array $orderBy = null, $limit = null, $offset = null, $noCache = null, Connection $connection = null)
 	{
 		if (!$connection) {
 			$connection = self::$connection;
@@ -424,10 +462,12 @@ abstract class Entity
 				if (!isset($columns[$col])) {
 					throw new \Exception('There is no field "' . $col . '" in ' . $className);
 				}
+				/** @var Column $column */
+				$column = $columns[$col];
 				if ($val === null) {
-					$db->andWhere($columns[$col]->getName() . " IS NULL");
+					$db->andWhere($column->getName() . " IS NULL");
 				} else {
-					$db->andWhere($columns[$col]->getName() . " = :$col")->setParameter($col, $val);
+					$db->andWhere($column->getName() . " = :$col")->setParameter($col, $val);
 				}
 			}
 		}
@@ -436,7 +476,9 @@ abstract class Entity
 				if (!isset($columns[$col])) {
 					throw new \Exception('There is no field "' . $col . '" in ' . $className);
 				}
-				$db->addOrderBy($columns[$col]->getName(), $val);
+				/** @var Column $column */
+				$column = $columns[$col];
+				$db->addOrderBy($column->getName(), $val);
 			}
 		}
 		if ($limit !== null) {

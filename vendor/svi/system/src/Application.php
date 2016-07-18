@@ -172,7 +172,7 @@ class Application
 	 */
 	public function getRequest()
 	{
-		return $this->silex['request'];
+		return $this->silex['request_stack']->getCurrentRequest();
 	}
 
 	/**
