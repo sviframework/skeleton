@@ -6,7 +6,7 @@ use Svi\Base\Container;
 use Svi\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class Controller extends \Svi\Controller
+abstract class Controller extends \Svi\Controller
 {
 	/**
 	 * @var Container
