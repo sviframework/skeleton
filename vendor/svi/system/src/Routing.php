@@ -85,7 +85,11 @@ class Routing
 		}
 		if ($absolute) {
 			$route = $this->app->getRequest()->getHttpHost() . $route;
-			$route = ($protocol ? $protocol : ($this->app->getRequest()->isSecure() ? 'https' : 'http')) . '://' . $route;
+			
+			if (!in_array($protocol, ['https', 'http'])) {
+				$protocol = $this->app->getRequest()->isSecure() ? 'https' : 'http';
+			}
+			$route = $protocol . '://' . $route;
 		}
 
 		return $route;
