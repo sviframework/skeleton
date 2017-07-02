@@ -60,11 +60,11 @@ class Application
 		$handler = ExceptionHandler::register($this->config->get('debug'));
 		$handler->setHandler([$this->logger, 'handleException']);
 
-		if ($this->config->get('db')) {
+		Manager::setApp($this);
+		if ($this->config->get('dbs')) {
 			$this->silex->register(new DoctrineServiceProvider(), [
-				'db.options' => $this->config->get('db'),
+				'dbs.options' => $this->config->get('dbs'),
 			]);
-			Entity::$connection = $this->silex['db'];
 		}
 		$this->tryInitTwig();
 		if (!$this->console) {
@@ -200,11 +200,12 @@ class Application
 	}
 
 	/**
+	 * @param string $schemaName
 	 * @return \Doctrine\DBAL\Connection
 	 */
-	public function getDb()
+	public function getDb($schemaName = 'default')
 	{
-		return $this->silex['db'];
+		return $this->silex['dbs'][$schemaName];
 	}
 
 	/**

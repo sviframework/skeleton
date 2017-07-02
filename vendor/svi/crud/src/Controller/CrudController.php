@@ -4,6 +4,7 @@ namespace Svi\Crud\Controller;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use Svi\Base\Controller\Controller;
+use Svi\Base\Forms\Field;
 use Svi\Base\Forms\Form;
 use Svi\Crud\Entity\NestedSortableInterface;
 use Svi\Crud\Entity\SortableInterface;
@@ -11,12 +12,11 @@ use Svi\Crud\Entity\RemovableInterface;
 use Svi\Base\Utils\Paginator;
 use Svi\Base\Utils\Sorter;
 use Svi\Entity;
+use Svi\Manager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 abstract class CrudController extends Controller
 {
-	private $entity;
-
 	public function indexAction()
 	{
 		if ($this->isSortable()) {
@@ -45,7 +45,7 @@ abstract class CrudController extends Controller
 		$sorter = new Sorter($sortableColumns, $this->getRequest());
 		$sorter->processColumns($templateTable['columns']);
 
-		$db = $this->createQB()->from($this->getEntity()->getTableName(), '');
+		$db = $this->createQB()->from($this->getManager()->getTableName(), '');
 
 		$filter = $this->createForm(['method' => 'get']);
 		$filter->setMethod('get');
@@ -56,6 +56,7 @@ abstract class CrudController extends Controller
 		}
 
 		if ($filter) {
+			/** @var Field $f */
 			foreach ($filter->getFields() as $f) {
 				$f->setRequired(false);
 			}
@@ -63,8 +64,7 @@ abstract class CrudController extends Controller
 			$this->applyFilter($filter->getData(), $db);
 		}
 
-		$className = $this->getClassName();
-		if (new $className instanceof RemovableInterface) {
+		if ($this->getManager()->isRemovable()) {
 			$db->andWhere('removed <> 1');
 		}
 		$this->modifyQuery($db);
@@ -74,9 +74,9 @@ abstract class CrudController extends Controller
 		$db
 			->setFirstResult($paginator->getCurrentPage() * $paginator->getItemsPerPage())
 			->setMaxResults($paginator->getItemsPerPage())
-			->orderBy($this->getEntity()->getDbColumnNames()[$sorter->getBy()], $sorter->getOrder());
+			->orderBy($this->getManager()->getDbColumnNames()[$sorter->getBy()], $sorter->getOrder());
 
-		$templateTable['rows'] = $this->getTableRows($this->getEntity()->fetch($db));
+		$templateTable['rows'] = $this->getTableRows($this->getManager()->fetch($db));
 
 		return $this->render($this->getIndexTemplate(), $this->getTemplateParameters(array(
 			'data' => array(
@@ -85,8 +85,8 @@ abstract class CrudController extends Controller
 				'pages' => $paginator ? $paginator->getView() : false,
 				'sorter' => $sorter,
 				'table' => $templateTable,
-				'title' => $this->getIndexTitle() ? $this->getIndexTitle() : 'crud.title.list' . str_replace('\\', '', $this->getClassName()),
-				'tableClass' => str_replace('\\', '', $this->getClassName()),
+				'title' => $this->getIndexTitle() ? $this->getIndexTitle() : 'crud.title.list' . str_replace('\\', '', $this->getManager()->getEntityClassName()),
+				'tableClass' => str_replace('\\', '', $this->getManager()->getEntityClassName()),
 			),
 		)));
 	}
@@ -98,7 +98,7 @@ abstract class CrudController extends Controller
 
 	public function editAction($id)
 	{
-		if (!($entity = $this->getEntity()->findOneBy([$this->getEntityIdFieldName() => $id]))) {
+		if (!($entity = $this->getManager()->findOneBy([$this->getEntityIdFieldName() => $id]))) {
 			throw new NotFoundHttpException();
 		}
 
@@ -107,7 +107,7 @@ abstract class CrudController extends Controller
 
 	function deleteAction($id)
 	{
-		if (!($entity = $this->getEntity()->findOneBy([$this->getEntityIdFieldName() => $id]))) {
+		if (!($entity = $this->getManager()->findOneBy([$this->getEntityIdFieldName() => $id]))) {
 			throw new NotFoundHttpException();
 		}
 		$request = $this->getRequest();
@@ -138,18 +138,17 @@ abstract class CrudController extends Controller
 		}
 
 		return $this->render($this->getDeleteTemplate(), $this->getTemplateParameters(array(
-			'className' => str_replace('\\', '', $this->getClassName()),
+			'className' => str_replace('\\', '', $this->getManager()->getEntityClassName()),
 			'entity' => $entity,
 			'formDelete' => $formDelete,
 			'baseTemplate' => $this->getBaseTemplate(),
 		)));
 	}
 
-	protected function getEditView($entity = null)
+	protected function getEditView(Entity $entity = null)
 	{
 		if (!$entity) {
-			$className = $this->getClassName();
-			$entity = new $className();
+			$entity = $this->getManager()->createEntity();
 			$add = true;
 		} else {
 			$add = false;
@@ -158,6 +157,7 @@ abstract class CrudController extends Controller
 		$form = $this->createForm();
 		$this->buildForm($form, $entity);
 
+		/** @var Field $value */
 		foreach ($form->getFields() as $key => $value) {
 			$attr = $value->getAttr();
 			if (@$attr['data-delete']) {
@@ -196,15 +196,13 @@ abstract class CrudController extends Controller
 			return $this->updateWeights();
 		}
 
-		$className = $this->getClassName();
-		$instance = new $className;
-		if (!($instance instanceof SortableInterface)) {
+		if (!$this->getManager()->isSortable()) {
 			throw new \Exception('Sortable CRUD requires what class implements SortableInterface');
 		}
 
 		$routes = $this->getRoutes();
 
-		$db = $this->createQB()->from($this->getEntity()->getTableName(), '');
+		$db = $this->createQB()->from($this->getManager()->getTableName(), '');
 
 		$filter = $this->createForm(['method' => 'get']);
 		$filter->setMethod('get');
@@ -214,6 +212,7 @@ abstract class CrudController extends Controller
 		}
 
 		if ($filter) {
+			/** @var Field $f */
 			foreach ($filter->getFields() as $f) {
 				$f->setRequired(false);
 			}
@@ -221,13 +220,14 @@ abstract class CrudController extends Controller
 			$this->applyFilter($filter->getData(), $db);
 		}
 
-		if ($instance instanceof RemovableInterface) {
+		if ($this->getManager()->isRemovable()) {
 			$db->andWhere('removed <> 1');
 		}
 		$this->modifyQuery($db);
 
 		$items = array();
-		foreach ($this->getEntity()->fetch($db->orderBy('weight', 'ASC')) as $i) {
+		/** @var SortableInterface|Entity $i */
+		foreach ($this->getManager()->fetch($db->orderBy('weight', 'ASC')) as $i) {
 			$item = array();
 			foreach ($this->getListColumns() as $key => $value) {
 				$col = $this->getColumnFieldValue($key, $value, $i);
@@ -235,16 +235,20 @@ abstract class CrudController extends Controller
 				$item[$key] = $col;
 			}
 			if (!isset($item['id'])) {
-				$item['id'] = array('type' => 'string', 'value' => $i->getFieldValue($this->getEntityIdFieldName()), 'hide' => true, 'notForPrint' => true);
+				$item['id'] = array('type' => 'string', 'value' => $this->getManager()->getFieldValue($i, $this->getEntityIdFieldName()), 'hide' => true, 'notForPrint' => true);
 			}
-			if ($instance instanceof NestedSortableInterface) {
+			if ($this->getManager()->isNestedSortable()) {
+				/** @var NestedSortableInterface|Entity $i */
 				$parent = null;
-				$item['parent'] = $i->getParentId() ? $i->findOneBy([$i->getIdColumnName() => $i->getParentId()])->getFieldValue($this->getEntityIdFieldName()) : false;
+				$item['parent'] = $i->getParentId() ?
+					$this->getManager()->getFieldValue($this->getManager()->findOneBy([$this->getManager()->getIdColumnName() => $i->getParentId()]), $this->getEntityIdFieldName())
+					: false;
 				$item['children'] = array();
 			}
-			$items[$i->getFieldValue($this->getEntityIdFieldName())] = $item;
+			/** @var Entity $i */
+			$items[$this->getManager()->getFieldValue($i, $this->getManager()->getIdFieldName())] = $item;
 		}
-		if ($instance instanceof NestedSortableInterface) {
+		if ($this->getManager()->isNestedSortable()) {
 			foreach ($items as $key => &$value) {
 				if ($value['parent']) {
 					$items[$value['parent']]['children'][$key] = &$value;
@@ -266,7 +270,7 @@ abstract class CrudController extends Controller
 				'delete' => @$routes['delete'],
 				'edit' => @$routes['edit'],
 			),
-			'nested' => $instance instanceof NestedSortableInterface,
+			'nested' => $this->getManager()->isSortable(),
 			'filter' => $filter,
 		)));
 	}
@@ -278,16 +282,18 @@ abstract class CrudController extends Controller
 			return $this->jsonError('Weights parameters is not specified');
 		}
 		foreach ($data['weights'] as $weight) {
-			if ($i = $this->getEntity()->findOneBy([$this->getEntityIdFieldName() => $weight['id']])) {
+			/** @var SortableInterface $i */
+			if ($i = $this->getManager()->findOneBy([$this->getEntityIdFieldName() => $weight['id']])) {
 				$i->setWeight($weight['weight']);
-				if ($i instanceof NestedSortableInterface) {
-					if ($weight['parent'] && $parent = $this->getEntity()->findOneBy([$this->getEntity()->getIdColumnName() => $weight['parent']])) {
-						$i->setParentId($parent->getFieldValue($this->getEntityIdFieldName()));
+				if ($this->getManager()->isNestedSortable()) {
+					/** @var NestedSortableInterface|Entity $i */
+					if ($weight['parent'] && $parent = $this->getManager()->findOneBy([$this->getEntityIdColumnName() => $weight['parent']])) {
+						$i->setParentId($this->getManager()->getFieldValue($parent, $this->getEntityIdFieldName()));
 					} else {
 						$i->setParentId(NULL);
 					}
 				}
-				$i->save();
+				$this->getManager()->save($i);
 			}
 		}
 
@@ -296,7 +302,10 @@ abstract class CrudController extends Controller
 
 	abstract protected function getBaseTemplate();
 
-	abstract protected function getClassName();
+	/**
+	 * @return Manager
+	 */
+	abstract protected function getManager();
 
 	abstract protected function getListColumns();
 
@@ -331,7 +340,7 @@ abstract class CrudController extends Controller
 				$this->saveField($entity, $form, $key);
 			}
 		}
-		$entity->save();
+		$this->getManager()->save($entity);
 	}
 
 	protected function saveField(Entity $entity, Form $form, $key)
@@ -349,12 +358,12 @@ abstract class CrudController extends Controller
 				$uri = null;
 			}
 
-			$entity->setFieldValue($key,
-				$this->c->getFileService()->getNewFileUriFromField($entity->getFieldValue($key), $value, $uri,
+			$this->getManager()->setFieldValue($entity, $key,
+				$this->c->getFileService()->getNewFileUriFromField($this->getManager()->getFieldValue($entity, $key), $value, $uri,
 					@$data['deletefile_' . $key] ? true : false)
 			);
 		} else {
-			$entity->setFieldValue($key, $value);
+			$this->getManager()->setFieldValue($entity, $key, $value);
 		}
 	}
 
@@ -379,9 +388,9 @@ abstract class CrudController extends Controller
 	{
 		if ($entity instanceof RemovableInterface) {
 			$entity->remove();
-			$entity->save();
+			$this->getManager()->save($entity);
 		} else {
-			$entity->delete();
+			$this->getManager()->delete($entity);
 		}
 	}
 
@@ -397,7 +406,8 @@ abstract class CrudController extends Controller
 				$row[$key] = $this->getColumnFieldValue($key, $c, $i);
 			}
 			if (!isset($row[$this->getEntityIdFieldName()])) {
-				$row[$this->getEntityIdFieldName()] = array('type' => 'string', 'value' => $i->getFieldValue($this->getEntityIdFieldName()), 'hide' => true);
+				$row[$this->getEntityIdFieldName()] =
+					array('type' => 'string', 'value' => $this->getManager()->getFieldValue($i, $this->getEntityIdFieldName()), 'hide' => true);
 			}
 			$rows[] = $row;
 		}
@@ -411,7 +421,7 @@ abstract class CrudController extends Controller
 		if (!is_string($column) && @$column['type'] == 'actions') {
 			$value = $column;
 		} else if ($value === NULL) {
-			$value = $item->getFieldValue($key);
+			$value = $this->getManager()->getFieldValue($item, $key);
 		} else if (is_callable($value)) {
 			$value = $value($item);
 		}
@@ -435,7 +445,7 @@ abstract class CrudController extends Controller
 	{
 		return $parameters + [
 			'baseTemplate' => $this->getBaseTemplate(),
-			'className' => str_replace('\\', '', $this->getClassName()),
+			'className' => str_replace('\\', '', $this->getManager()->getEntityClassName()),
 			'templates' => [
 				'delete' => $this->getDeleteTemplate(),
 				'edit' => $this->getEditTemplate(),
@@ -471,22 +481,14 @@ abstract class CrudController extends Controller
 
 	protected function getFieldTemplate() { return 'svi/crud/src/Views/table_field.twig'; }
 
-	/**
-	 * @return Entity
-	 */
-	protected function getEntity()
-	{
-		if (!isset($this->entity)) {
-			$className = $this->getClassName();
-			$this->entity = new $className();
-		}
-
-		return $this->entity;
-	}
-
 	protected function getEntityIdFieldName()
 	{
-		return $this->getEntity()->getIdFieldName();
+		return $this->getManager()->getIdFieldName();
+	}
+
+	protected function getEntityIdColumnName()
+	{
+		return $this->getManager()->getIdColumnName();
 	}
 
 	protected function crudRedirect($url = NULL)

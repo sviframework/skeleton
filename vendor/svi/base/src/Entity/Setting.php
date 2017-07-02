@@ -9,26 +9,6 @@ class Setting extends \Svi\Entity
 	private $value;
 
 	/**
-	 * Must return fields in like that: DB_field_name => classFieldName
-	 */
-	public function getFields()
-	{
-		return [
-			'id' => ['id', 'integer', 'id'],
-			'key' => ['skey', 'string', 'length' => 64, 'unique'],
-			'value' => ['value', 'text', 'null'],
-		];
-	}
-
-	/**
-	 * Must return table name in SQL DB where entity stored
-	 */
-	public function getTableName()
-	{
-		return 'setting';
-	}
-
-	/**
 	 * @param mixed $id
 	 * @return Setting
 	 */

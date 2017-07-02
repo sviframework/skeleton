@@ -47,6 +47,20 @@ class Bundles
 		return $result;
 	}
 
+	/**
+	 * @return Manager[]
+	 */
+	public function getManagers()
+	{
+		$result = [];
+		/** @var Bundle $b */
+		foreach ($this->bundles as $b) {
+			$result = array_merge($result, $b->getManagers());
+		}
+
+		return $result;
+	}
+
 	public function getCommandClasses()
 	{
 		$result = [];

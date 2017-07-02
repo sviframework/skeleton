@@ -2,16 +2,18 @@
 	return array(
 		'assetsVersion' => 'v1',
 		'debug' => true,
-		'db' => array(
-			'driver' => 'pdo_mysql',
-			'charset' => 'utf8',
-			'host' => 'localhost',
-			//'path' => 'app/base' # only for pdo_sqlite
-			//'port' => 43434 # default
-			'dbname' => 'silex',
-			'user' => 'silex',
-			'password' => 'qdLrZfnQt544sW9c',
-		),
+		'dbs' => [
+			'default' => [
+				'driver' => 'pdo_mysql',
+				'charset' => 'utf8',
+				'host' => 'localhost',
+				//'path' => 'app/base' # only for pdo_sqlite
+				//'port' => 43434 # default
+				'dbname' => 'silex',
+				'user' => 'silex',
+				'password' => 'qdLrZfnQt544sW9c',
+			]
+		],
 		'twig' => [
 			'strict_variables' => false,
 		],

@@ -9,4 +9,8 @@ interface NestedSortableInterface extends SortableInterface
 
 	public function setParentId($parentId = null);
 
+	public function getWeight();
+
+	public function setWeight($weight);
+
 } 

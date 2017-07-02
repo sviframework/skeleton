@@ -4,6 +4,7 @@ namespace Svi\Base\Service;
 
 use Svi\Base\ContainerAware;
 use Svi\Base\Entity\Setting;
+use Svi\Base\Manager\SettingManager;
 
 class SettingsService extends ContainerAware
 {
@@ -32,7 +33,7 @@ class SettingsService extends ContainerAware
 
 	public function updateDatabase()
 	{
-		$exists = Setting::findBy();
+		$exists = $this->getManager()->findBy();
 
 		foreach (array_keys($this->c->getConfig()->get('settings')) as $key) {
 			$inDb = null;
@@ -45,7 +46,8 @@ class SettingsService extends ContainerAware
 			if (!$inDb) {
 				$inDb = new Setting();
 				$inDb->setKey($key);
-				$inDb->save();
+
+				$this->getManager()->save($inDb);
 			}
 		}
 	}
@@ -68,7 +70,7 @@ class SettingsService extends ContainerAware
 			$setting->setKey($key);
 			$setting->setValue($value);
 		}
-		$setting->save();
+		$this->getManager()->save($setting);
 		$this->allSettings[strtolower($key)] = $value;
 	}
 
@@ -88,7 +90,15 @@ class SettingsService extends ContainerAware
 	 */
 	protected function getSetting($key)
 	{
-		return Setting::fetchOne($this->createQB()->where('skey = :key')->setParameter('key', $key));
+		return $this->getManager()->fetchOne($this->createQB()->where('skey = :key')->setParameter('key', $key));
+	}
+
+	/**
+	 * @return SettingManager
+	 */
+	protected function getManager()
+	{
+		return SettingManager::getInstance();
 	}
 
 }

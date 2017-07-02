@@ -33,15 +33,33 @@ abstract class Bundle
 		return array();
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getEntityClasses()
 	{
-		$result = array();
-		$dir = $this->getDir() . '/Entity';
+		$result = [];
+		$managers = $this->getManagers();
+
+		foreach ($managers as $manager) {
+			$result[] = $manager->getEntityClassName();
+		}
+
+		return $result;
+	}
+
+	/**
+	 * @return Manager[]
+	 */
+	public function getManagers()
+	{
+		$result = [];
+		$dir = $this->getDir() . '/Manager';
 		if (file_exists($dir)) {
 			$d = dir($dir);
 			while (false !== ($entry = $d->read())) {
 				if (preg_match('/^(.*)\.php$/', $entry, $matches)) {
-					$result[] = $this->getNamespace() . '\\Entity\\' . $matches[1];
+					$result[] = call_user_func($this->getNamespace() . '\\Manager\\' . $matches[1] . '::getInstance');
 				}
 			}
 			$d->close();

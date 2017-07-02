@@ -2,6 +2,8 @@
 
 namespace Svi;
 
+use Doctrine\DBAL\Schema\Schema;
+
 class EntityUpdateCommand extends ConsoleCommand
 {
 
@@ -19,21 +21,35 @@ class EntityUpdateCommand extends ConsoleCommand
 	{
 		$execute = in_array('--execute', $args);
 
-		if (!count($sqls = $this->getUpdateSchemaSql())) {
-			$this->writeLn('There is no updates');
-		} else {
+		$updates = $this->getUpdateSchemaSql();
+		$needUpdate = false;
+		foreach ($updates as $key => $sqls) {
+			if (!count($sqls)) {
+				$this->writeLn('There is no updates for schema "' . $key . '"');
+			} else {
+				$needUpdate = true;
+			}
+		}
+
+		if ($needUpdate) {
 			if (!$execute) {
 				$this->writeLn('This SQL commans need to be executed to synchronize database.');
 				$this->writeLn('You can execute it manual or run command: "php app/console db:update --execute"');
 				$this->writeLn(strtoupper('P.S. Making database backup will be a good idea!'));
+				$this->writeLn();
 			} else {
 				$this->writeLn('Executing commands:');
 			}
-			foreach ($this->getUpdateSchemaSql() as $sql) {
-				$this->writeLn();
-				$this->writeLn($sql);
-				if ($execute) {
-					$this->getApp()->getDb()->exec($sql);
+			foreach ($updates as $key => $sqls) {
+				$this->writeLn('For schema "' . $key . '":');
+				$this->writeLn('=============================');
+				foreach ($sqls as $sql) {
+					$sql .= ';';
+					$this->writeLn();
+					$this->writeLn($sql);
+					if ($execute) {
+						$this->getApp()->getDb($key)->exec($sql);
+					}
 				}
 			}
 		}
@@ -41,21 +57,21 @@ class EntityUpdateCommand extends ConsoleCommand
 
 	protected function getUpdateSchemaSql()
 	{
-		foreach ($this->getApp()->getBundles()->getEntityClasses() as $c) {
-			$r = new \ReflectionClass($c);
-			if (!$r->isInterface() && !$r->isAbstract() && !$r->isTrait()) {
-				$entity = new $c();
-				$entity->getTableSchema();
-			}
+		/** @var Schema[] $schemas */
+		$schemas = [];
+		$managers = $this->getApp()->getBundles()->getManagers();
+		foreach ($managers as $manager) {
+			$manager->getTableSchema();
+			$schemas[$manager->getSchemaName()] = $manager->getDbSchema();
 		}
 
-		$schema = Entity::getDbSchema();
-		if ($schema) {
-			$dbSchema = $this->getApp()->getDb()->getSchemaManager()->createSchema();
-			return $schema->getMigrateFromSql($dbSchema, $this->getApp()->getDb()->getDatabasePlatform());
+		$sqls = [];
+		foreach ($schemas as $key => $schema) {
+			$dbSchema = $this->getApp()->getDb($key)->getSchemaManager()->createSchema();
+			$sqls[$key] = $schema->getMigrateFromSql($dbSchema, $this->getApp()->getDb($key)->getDatabasePlatform());
 		}
 
-		return [];
+		return $sqls;
 	}
 
 } 
