@@ -7,7 +7,6 @@ use \Doctrine\DBAL\Schema\Table;
 use \Doctrine\DBAL\Schema\Column;
 use \Doctrine\DBAL\Connection;
 use \Doctrine\DBAL\Query\QueryBuilder;
-use Kh\ContentBundle\Entity\Post;
 use Svi\Crud\Entity\NestedSortableInterface;
 use Svi\Crud\Entity\RemovableInterface;
 use Svi\Crud\Entity\SortableInterface;
@@ -16,9 +15,8 @@ use Svi\Crud\Entity\SortableInterface;
 
 abstract class Manager
 {
-	protected static $_instance = [];
 	/** @var Application */
-	protected static $app;
+	protected $app;
 	private $schemaName = null;
 	/** @var Schema[] Schema */
 	private static $schemas = [];
@@ -26,24 +24,10 @@ abstract class Manager
 	/** @var \ReflectionClass */
 	private $reflection = null;
 
-	private function __construct()
+	public function __construct(Application $app, $schemaName = 'default')
 	{
-
-	}
-
-	private function __clone()
-	{
-
-	}
-
-	private function __wakeup()
-	{
-
-	}
-
-	public static function setApp(Application $app)
-	{
-		self::$app = $app;
+		$this->app = $app;
+		$this->schemaName = $schemaName;
 	}
 
 	public function getSchemaName()
@@ -52,29 +36,11 @@ abstract class Manager
 	}
 
 	/**
-	 * @param string $schemaName
-	 * @return Manager
-	 */
-	public static function getInstance($schemaName = 'default')
-	{
-		if (!array_key_exists($schemaName, self::$_instance) || !array_key_exists(get_called_class(), self::$_instance[$schemaName])) {
-			$instance = new static();
-			if (!array_key_exists($schemaName, self::$_instance)) {
-				self::$_instance[$schemaName] = [];
-			}
-			self::$_instance[$schemaName][get_called_class()] = $instance;
-			$instance->schemaName = $schemaName;
-		}
-
-		return self::$_instance[$schemaName][get_called_class()];
-	}
-
-	/**
 	 * @return Connection
 	 */
 	public function getConnection()
 	{
-		return self::$app->getSilex()['dbs'][$this->schemaName];
+		return $this->app->getSilex()['dbs'][$this->schemaName];
 	}
 
 	/**

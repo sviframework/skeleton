@@ -2,53 +2,39 @@
 
 namespace Svi\Base;
 
-use Svi\Base\Service\AlertsService;
-use Svi\Base\Service\FormService;
-use Svi\Base\Service\SettingsService;
-use Svi\File\Service\FileService;
-use Svi\File\Service\ImageService;
-
 class Container extends \Svi\Container
 {
 
 	/**
-	 * @return FormService
+	 * @return Bundle
 	 */
-	public function getFormService()
+	public function getSviBaseBundle()
 	{
-		return $this->getApp()->get('service.sviform');
+		return $this->getApp()->get('bundle.svibase');
 	}
 
 	/**
-	 * @return SettingsService
+	 * @return \Svi\Mail\Bundle
 	 */
-	public function getSettingsService()
+	public function getSviMailBundle()
 	{
-		return $this->getApp()->get('service.svisettings');
+		return $this->getApp()->get('bundle.svimail');
 	}
 
 	/**
-	 * @return AlertsService
+	 * @return \Svi\File\Bundle
 	 */
-	public function getAlertsService()
+	public function getSviFileBundle()
 	{
-		return $this->getApp()->get('service.svialerts');
+		return $this->getApp()->get('bundle.svifile');
 	}
 
 	/**
-	 * @return FileService
+	 * @return \Svi\File\Bundle
 	 */
-	public function getFileService()
+	public function getSviCrudBundle()
 	{
-		return $this->getApp()->get('service.svifile');
-	}
-
-	/**
-	 * @return ImageService
-	 */
-	public function getImageService()
-	{
-		return $this->getApp()->get('service.sviimage');
+		return $this->getApp()->get('bundle.svifile');
 	}
 
 } 

@@ -8,10 +8,8 @@ use \Silex\Provider\DoctrineServiceProvider;
 use \Silex\Provider\ServiceControllerServiceProvider;
 use \Silex\Provider\TwigServiceProvider;
 
-class Application
+class Application implements \ArrayAccess
 {
-	private static $_instance;
-
 	/**
 	 * @var Logger
 	 */
@@ -38,7 +36,7 @@ class Application
 	 */
 	private $routing;
 
-	private function __construct(array $argv = null)
+	public function __construct(array $argv = null)
 	{
 		if ($argv) {
 			$this->console = true;
@@ -50,17 +48,15 @@ class Application
 
 		$loader->add('', $this->getRootDir() . '/src');
 
-		require_once $this->getRootDir() . '/app/config/config.php';
-		$this->config = Config::getInstance($this);
+		$this->config = new Config($this);
 		$this->silex['debug'] = $this->config->get('debug');
 
-		$this->logger = Logger::getInstance($this);
+		$this->logger = new Logger($this);
 
 		ErrorHandler::register();
 		$handler = ExceptionHandler::register($this->config->get('debug'));
 		$handler->setHandler([$this->logger, 'handleException']);
 
-		Manager::setApp($this);
 		if ($this->config->get('dbs')) {
 			$this->silex->register(new DoctrineServiceProvider(), [
 				'dbs.options' => $this->config->get('dbs'),
@@ -69,48 +65,35 @@ class Application
 		$this->tryInitTwig();
 		if (!$this->console) {
 			$this->silex['session'] = function(){
-				return Session::getInstance($this);
+				return new Session($this);
 			};
 
 			$this->silex['cookies'] = function(){
-				return Cookies::getInstance($this);
+				return new Cookies($this);
 			};
 		}
 		$this->silex['translation'] = function(){
-			return Translation::getInstance($this);
+			return new Translation($this);
 		};
 
-		$this->bundles = Bundles::getInstance($this);
+		$this->bundles = new Bundles($this);
 
 		if (!$this->console) {
 			$this->silex->register(new ServiceControllerServiceProvider());
 		}
-		$this->routing = Routing::getInstance($this);
+		$this->routing = new Routing($this);
 
 		if ($this->console) {
-			$this->console = Console::getInstance($this, $argv);
+			$this->console = new Console($this, $argv);
 		}
 	}
 
-	protected function _run()
+	public function run()
 	{
 		if (!$this->console) {
 			$this->getSilex()->run();
 		} else {
 			$this->console->run();
-		}
-	}
-
-	private function __clone(){}
-	private function __wakeup(){}
-
-	static public function run(array $argv = null)
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self($argv);
-			self::$_instance->_run();
-		} else {
-			throw new \Exception('Application already run');
 		}
 	}
 
@@ -235,6 +218,26 @@ class Application
 	public function isConsole()
 	{
 		return $this->console;
+	}
+
+	public function offsetExists($offset)
+	{
+		return isset($this->silex[$offset]);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->silex[$offset];
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		$this->silex[$offset] = $value;
+	}
+
+	public function offsetUnset($offset)
+	{
+		unset($this->silex[$offset]);
 	}
 
 }

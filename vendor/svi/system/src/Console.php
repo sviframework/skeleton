@@ -4,7 +4,6 @@ namespace Svi;
 
 class Console
 {
-	private static $_instance;
 	/**
 	 * @var Application
 	 */
@@ -12,7 +11,7 @@ class Console
 	private $commands;
 	private $argv;
 
-	private function __construct(Application $app, $argv)
+	public function __construct(Application $app, $argv)
 	{
 		$this->app = $app;
 		$this->argv = $argv;
@@ -23,18 +22,6 @@ class Console
 		foreach ($this->app->getBundles()->getCommandClasses() as $c) {
 			$this->addCommand(new $c($this->app));
 		}
-	}
-
-	private function __clone() {}
-	private function __wakeup(){}
-
-	public static function getInstance(Application $app, $argv)
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self($app, $argv);
-		}
-
-		return self::$_instance;
 	}
 
 	public function run()

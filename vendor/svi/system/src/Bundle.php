@@ -7,12 +7,15 @@ abstract class Bundle
 	private $name;
 	private $namespace;
 	private $app;
+	private $services = [];
+	private $managers = [];
 
 	function __construct(Application $app)
 	{
 		$this->app = $app;
 		$this->loadConfig();
 		$this->loadServices();
+		$this->loadManagers();
 	}
 
 	/**
@@ -39,10 +42,9 @@ abstract class Bundle
 	public function getEntityClasses()
 	{
 		$result = [];
-		$managers = $this->getManagers();
 
-		foreach ($managers as $manager) {
-			$result[] = $manager->getEntityClassName();
+		foreach ($this->getManagerInstances() as $manager) {
+			$result = $manager->getEntityClassName();
 		}
 
 		return $result;
@@ -51,18 +53,12 @@ abstract class Bundle
 	/**
 	 * @return Manager[]
 	 */
-	public function getManagers()
+	public function getManagerInstances()
 	{
 		$result = [];
-		$dir = $this->getDir() . '/Manager';
-		if (file_exists($dir)) {
-			$d = dir($dir);
-			while (false !== ($entry = $d->read())) {
-				if (preg_match('/^(.*)\.php$/', $entry, $matches)) {
-					$result[] = call_user_func($this->getNamespace() . '\\Manager\\' . $matches[1] . '::getInstance');
-				}
-			}
-			$d->close();
+
+		foreach ($this->managers as $managerName) {
+			$result[] = $this->app->get($managerName);
 		}
 
 		return $result;
@@ -110,12 +106,17 @@ abstract class Bundle
 
 	public function getRoutes()
 	{
-		return array();
+		return [];
 	}
 
 	protected function getServices()
 	{
-		return array();
+		return [];
+	}
+
+	protected function getManagers()
+	{
+		return [];
 	}
 
 	protected function getConfig()
@@ -132,12 +133,23 @@ abstract class Bundle
 
 	private function loadServices()
 	{
-		$app = $this->app;
 		foreach ($this->getServices() as $name => $class) {
 			$className = $this->getNamespace().'\\'.$class;
-			$app->getSilex()[$name] = function() use ($className, $app) {
-				return new $className($app);
+			$this->app->getSilex()[$name] = function () use ($className) {
+				return new $className($this->app);
 			};
+			$this->services[] = $name;
+		}
+	}
+
+	private function loadManagers()
+	{
+		foreach ($this->getManagers() as $name => $class) {
+			$className = $this->getNamespace() . '\\' . $class;
+			$this->app->getSilex()[$name] = function () use ($className) {
+				return new $className($this->app);
+			};
+			$this->managers[] = $name;
 		}
 	}
 

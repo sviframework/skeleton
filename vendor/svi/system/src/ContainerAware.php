@@ -27,9 +27,9 @@ abstract class ContainerAware
 		return $this->c->getApp()->getConfig()->getParameter($key);
 	}
 
-	public function getDb()
+	public function getDb($schema = 'default')
 	{
-		return $this->c->getDb();
+		return $this->c->getDb($schema);
 	}
 
 	public function getRequest()

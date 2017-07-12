@@ -48,11 +48,12 @@ class Container
 	}
 
 	/**
-	 * @return Connection
+	 * @param string $schema
+	 * @return mixed
 	 */
-	public function getDb()
+	public function getDb($schema = 'default')
 	{
-		return $this->silex['db'];
+		return $this->silex['dbs'][$schema];
 	}
 
 	/**

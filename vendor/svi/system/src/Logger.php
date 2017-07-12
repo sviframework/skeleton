@@ -7,28 +7,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Logger
 {
-	private static $_instance;
-
 	/**
 	 * @var Application
 	 */
 	private $app;
 
-	private function __construct(Application $app)
+	public function __construct(Application $app)
 	{
 		$this->app = $app;
-	}
-
-	private function __clone() {}
-	private function __wakeup(){}
-
-	public static function getInstance(Application $app)
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self($app);
-		}
-
-		return self::$_instance;
 	}
 
 	public function write($text, $logFile = 'error')

@@ -4,26 +4,13 @@ namespace Svi;
 
 class Config
 {
-	private static $_instance;
 	private $app;
 	protected $config;
 
-	private function __construct(Application $app)
+	public function __construct(Application $app, $dir = '/app/config/config.php')
 	{
 		$this->app = $app;
-		$this->config = include($app->getRootDir() . '/app/config/config.php');
-	}
-
-	private function __clone() {}
-	private function __wakeup(){}
-
-	public static function getInstance(Application $app)
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self($app);
-		}
-
-		return self::$_instance;
+		$this->config = include($app->getRootDir() . $dir);
 	}
 
 	public function set($key, $value)

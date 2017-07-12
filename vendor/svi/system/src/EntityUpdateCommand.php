@@ -59,7 +59,7 @@ class EntityUpdateCommand extends ConsoleCommand
 	{
 		/** @var Schema[] $schemas */
 		$schemas = [];
-		$managers = $this->getApp()->getBundles()->getManagers();
+		$managers = $this->getApp()->getBundles()->getManagerInstances();
 		foreach ($managers as $manager) {
 			$manager->getTableSchema();
 			$schemas[$manager->getSchemaName()] = $manager->getDbSchema();

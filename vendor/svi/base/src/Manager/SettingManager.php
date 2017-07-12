@@ -5,13 +5,6 @@ namespace Svi\Base\Manager;
 use Svi\Base\Entity\Setting;
 use Svi\Manager;
 
-/**
- * Class SettingManager
- * @method Setting[] findBy()
- * @method Setting fetchOne()
- * @method static SettingManager getInstance()
- * @package Svi\Base\Manager
- */
 class SettingManager extends Manager
 {
 	/**

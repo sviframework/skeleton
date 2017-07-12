@@ -131,7 +131,7 @@ abstract class CrudController extends Controller
 		if ($formDelete->handleRequest($request)->isValid()) {
 			if ($formDelete->get('delete')->getData() == 'delete') {
 				$this->delete($entity);
-				$this->c->getAlertsService()->addAlert('success', $this->c->getApp()->getTranslation()->trans('crud.success.delete'));
+				$this->c->getSviBaseBundle()->getAlertsService()->addAlert('success', $this->c->getApp()->getTranslation()->trans('crud.success.delete'));
 
 				return $this->crudRedirect();
 			}
@@ -175,7 +175,7 @@ abstract class CrudController extends Controller
 			if ($form->isValid()) {
 				$this->save($entity, $form, array());
 
-				$this->c->getAlertsService()->addAlert('success', $add ? $this->c->getApp()->getTranslation()->trans('crud.success.add') :
+				$this->c->getSviBaseBundle()->getAlertsService()->addAlert('success', $add ? $this->c->getApp()->getTranslation()->trans('crud.success.add') :
 					$this->c->getApp()->getTranslation()->trans('crud.success.edit'));
 
 				return $this->crudRedirect();
@@ -359,7 +359,7 @@ abstract class CrudController extends Controller
 			}
 
 			$this->getManager()->setFieldValue($entity, $key,
-				$this->c->getFileService()->getNewFileUriFromField($this->getManager()->getFieldValue($entity, $key), $value, $uri,
+				$this->c->getSviFileBundle()->getFileService()->getNewFileUriFromField($this->getManager()->getFieldValue($entity, $key), $value, $uri,
 					@$data['deletefile_' . $key] ? true : false)
 			);
 		} else {
@@ -375,7 +375,7 @@ abstract class CrudController extends Controller
 			$attr['data-delete'] = true;
 		}
 		if ($fileUri && $isImage) {
-			$attr['data-image'] = $this->c->getImageService()->getImagePath($fileUri, 120, 80);
+			$attr['data-image'] = $this->c->getSviFileBundle()->getImageService()->getImagePath($fileUri, 120, 80);
 		}
 		if ($dir) {
 			$attr['data-uri'] = $dir;

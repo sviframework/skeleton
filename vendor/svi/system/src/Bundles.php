@@ -4,28 +4,18 @@ namespace Svi;
 
 class Bundles
 {
-	private static $_instance;
 	private $app;
 	private $bundles;
 
-	private function __construct(Application $app)
+	public function __construct(Application $app)
 	{
 		$this->app = $app;
 		foreach ($app->getConfig()->get('bundles') as $bundleName) {
-			$this->bundles[] = new $bundleName($app);
+			/** @var Bundle $bundle */
+			$bundle = new $bundleName($app);
+			$this->bundles[] = $bundle;
+			$app['bundle.' . strtolower($bundle->getName())] = $bundle;
 		}
-	}
-
-	private function __clone() {}
-	private function __wakeup(){}
-
-	public static function getInstance(Application $app)
-	{
-		if (self::$_instance === null) {
-			self::$_instance = new self($app);
-		}
-
-		return self::$_instance;
 	}
 
 	/**
@@ -50,12 +40,12 @@ class Bundles
 	/**
 	 * @return Manager[]
 	 */
-	public function getManagers()
+	public function getManagerInstances()
 	{
 		$result = [];
 		/** @var Bundle $b */
 		foreach ($this->bundles as $b) {
-			$result = array_merge($result, $b->getManagers());
+			$result = array_merge($result, $b->getManagerInstances());
 		}
 
 		return $result;
