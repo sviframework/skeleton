@@ -35,14 +35,6 @@ class Bundle extends \Svi\Bundle
 	}
 
 	/**
-	 * @return SettingsService
-	 */
-	public function getSettingsService()
-	{
-		return $this->getApp()->get('service.svisettings');
-	}
-
-	/**
 	 * @return AlertsService
 	 */
 	public function getAlertsService()
@@ -51,11 +43,19 @@ class Bundle extends \Svi\Bundle
 	}
 
 	/**
+	 * @return SettingsService
+	 */
+	public function getSettingsService()
+	{
+		return $this->getApp()->get('service.svisettings');
+	}
+
+	/**
 	 * @return SettingManager
 	 */
 	public function getSettingsManager()
 	{
-		return $this->getApp()->get('manager.settings');
+		return $this->getApp()->get('manager.setting');
 	}
 
 } 

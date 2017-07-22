@@ -98,7 +98,7 @@ class SettingsService extends ContainerAware
 	 */
 	protected function getManager()
 	{
-		return SettingManager::getInstance();
+		return $this->c->getSviBaseBundle()->getSettingsManager();
 	}
 
 }
