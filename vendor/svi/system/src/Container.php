@@ -2,8 +2,6 @@
 
 namespace Svi;
 
-use Doctrine\DBAL\Connection;
-
 class Container
 {
 	private static $instances = array();
