@@ -7,10 +7,10 @@ class Config
 	private $app;
 	protected $config;
 
-	public function __construct(Application $app, $dir = '/app/config/config.php')
+	public function __construct(Application $app, $config = null)
 	{
 		$this->app = $app;
-		$this->config = include($app->getRootDir() . $dir);
+		$this->config = $config ? $config : include($app->getRootDir() . '/app/config/config.php');
 	}
 
 	public function set($key, $value)

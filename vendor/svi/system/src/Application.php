@@ -10,6 +10,8 @@ use \Silex\Provider\TwigServiceProvider;
 
 class Application implements \ArrayAccess
 {
+	private $appId;
+
 	/**
 	 * @var Logger
 	 */
@@ -36,8 +38,9 @@ class Application implements \ArrayAccess
 	 */
 	private $routing;
 
-	public function __construct(array $argv = null)
+	public function __construct($config = null, array $argv = null)
 	{
+
 		if ($argv) {
 			$this->console = true;
 		}
@@ -48,7 +51,7 @@ class Application implements \ArrayAccess
 
 		$loader->add('', $this->getRootDir() . '/src');
 
-		$this->config = new Config($this);
+		$this->config = new Config($this, $config);
 		$this->silex['debug'] = $this->config->get('debug');
 
 		$this->logger = new Logger($this);
