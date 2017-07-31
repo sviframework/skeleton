@@ -23,10 +23,14 @@ class Container
 	private function __wakeup(){}
 
 	public static function getInstance(Application $app) {
-		if (!@self::$instances[get_called_class()]) {
-			self::$instances[get_called_class()] = new static($app);
+		if (!array_key_exists($app->getInstanceId(), self::$instances)) {
+			self::$instances[$app->getInstanceId()] = [];
 		}
-		return self::$instances[get_called_class()];
+		if (!array_key_exists(get_called_class(), self::$instances[$app->getInstanceId()])) {
+			self::$instances[$app->getInstanceId()][get_called_class()] = new static($app);
+		}
+
+		return self::$instances[$app->getInstanceId()][get_called_class()];
 	}
 
 	/**

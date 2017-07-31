@@ -10,7 +10,7 @@ use \Silex\Provider\TwigServiceProvider;
 
 class Application implements \ArrayAccess
 {
-	private $appId;
+	private $instanceId;
 
 	/**
 	 * @var Logger
@@ -40,6 +40,7 @@ class Application implements \ArrayAccess
 
 	public function __construct($config = null, array $argv = null)
 	{
+		$this->instanceId = md5(time() . microtime() . rand());
 
 		if ($argv) {
 			$this->console = true;
@@ -241,6 +242,11 @@ class Application implements \ArrayAccess
 	public function offsetUnset($offset)
 	{
 		unset($this->silex[$offset]);
+	}
+
+	public function getInstanceId()
+	{
+		return $this->instanceId;
 	}
 
 }
