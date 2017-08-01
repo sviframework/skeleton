@@ -27,7 +27,7 @@ abstract class TinyMceUploadController extends Controller
 			$result = $file->getUrl();
 		}
 
-		return $this->render('svi/file/src/Views/TinyMceUpload/image.twig', array(
+		return $this->render('svi/file/src/Views/TinyMceUpload/image', array(
 			'form' => $form,
 			'result' => $result,
 			'type' => $type,

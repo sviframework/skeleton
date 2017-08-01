@@ -21,10 +21,10 @@ abstract class Controller
 			$lastPart = str_replace('Controller', '', $parts[count($parts) - 1]);
 			unset($parts[count($parts) - 1]);
 			unset($parts[count($parts) - 1]);
-			$template = implode('/', $parts) . '/Views/' . $lastPart . '/' . $template . '.twig';
+			$template = implode('/', $parts) . '/Views/' . $lastPart . '/' . $template;
 		}
 
-		return $this->c->getApp()->getTwig()->render($template, $parameters);
+		return $this->c->getApp()->getTemplateProcessor()->render($template, $parameters);
 	}
 
 	public function generateUrl($name, array $parameters = [], $absolute = false)

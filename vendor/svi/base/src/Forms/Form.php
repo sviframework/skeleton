@@ -295,7 +295,7 @@ class Form
 		} else {
 			$templatePath = ($this->getTemplatesPath() ? $this->getTemplatesPath() : 'svi/base/src/Forms/Views') . '/' .$template;
 		}
-		return $this->c->getApp()->getTwig()->render($templatePath . '.twig', $params);
+		return $this->c->getApp()->getTemplateProcessor()->render($templatePath, $params);
 	}
 
 	/**

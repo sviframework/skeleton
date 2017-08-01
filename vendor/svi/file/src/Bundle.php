@@ -13,8 +13,8 @@ class Bundle extends \Svi\Bundle
 	function __construct(Application $app)
 	{
 		parent::__construct($app);
-		if ($app->getTwig()) {
-			$app->getTwig()->addExtension(new ImageTwigExtension($app));
+		if ($app->getTemplateProcessor()->hasTwig()) {
+			$app->getTemplateProcessor()->getTwig()->addExtension(new ImageTwigExtension($app));
 		}
 	}
 

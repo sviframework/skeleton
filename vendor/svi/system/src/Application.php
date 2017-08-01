@@ -38,6 +38,11 @@ class Application implements \ArrayAccess
 	 */
 	private $routing;
 
+	/**
+	 * @var TemplateProcessor
+	 */
+	private $templateProcessor;
+
 	public function __construct($config = null, array $argv = null)
 	{
 		$this->instanceId = md5(time() . microtime() . rand());
@@ -66,7 +71,10 @@ class Application implements \ArrayAccess
 				'dbs.options' => $this->config->get('dbs'),
 			]);
 		}
+
+		$this->templateProcessor = new TemplateProcessor($this);
 		$this->tryInitTwig();
+
 		if (!$this->console) {
 			$this->silex['session'] = function(){
 				return new Session($this);
@@ -114,6 +122,7 @@ class Application implements \ArrayAccess
 				] + $this->getConfig()->get('twig'),
 			]);
 			$this->getSilex()['twig']->addExtension(new SilexTwigExtension($this));
+			$this->getTemplateProcessor()->addProcessor('twig', $this->getSilex()['twig']);
 		}
 	}
 
@@ -151,7 +160,11 @@ class Application implements \ArrayAccess
 
 	public function get($service)
 	{
-		return $this->silex[$service];
+		if (!$this->offsetExists($service)) {
+			throw new \Exception('Service "' . $service . '" is not registered');
+		}
+
+		return $this->offsetGet($service);
 	}
 
 	/**
@@ -189,9 +202,16 @@ class Application implements \ArrayAccess
 	/**
 	 * @param string $schemaName
 	 * @return \Doctrine\DBAL\Connection
+	 * @throws \Exception
 	 */
 	public function getDb($schemaName = 'default')
 	{
+		if (!$this->offsetExists('dbs')) {
+			throw new \Exception('dbs is not configured');
+		} elseif (!isset($this->silex['dbs'][$schemaName])) {
+			throw new \Exception('dbs schema "' . $schemaName . '" is not configured');
+		}
+
 		return $this->silex['dbs'][$schemaName];
 	}
 
@@ -212,11 +232,11 @@ class Application implements \ArrayAccess
 	}
 
 	/**
-	 * @return \Twig_Environment
+	 * @return TemplateProcessor
 	 */
-	public function getTwig()
+	public function getTemplateProcessor()
 	{
-		return $this->get('twig');
+		return $this->templateProcessor;
 	}
 
 	public function isConsole()
