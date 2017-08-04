@@ -87,21 +87,21 @@ abstract class Manager
 					foreach ($value as $pKey => $pVal) {
 						$i++;
 						if ($i < 3)	continue;
-						if ($pVal == 'id') {
+						if ($pVal === 'id') {
 							$column->setNotnull(true);
 							$column->setAutoincrement(true);
 							$table->setPrimaryKey(array($value[0]));
 							$this->cache['idFieldName'] = $key;
 							$this->cache['idColumnName'] = $column->getName();
-						} elseif ($pVal == 'ai') {
+						} elseif ($pVal === 'ai') {
 							$column->setAutoincrement(true);
 						} elseif ($pVal === 'null') {
 							$column->setNotnull(false);
-						} elseif($pVal == 'unique') {
+						} elseif($pVal === 'unique') {
 							$table->addUniqueIndex(array($column->getName()));
-						} elseif($pVal == 'index') {
+						} elseif($pVal === 'index') {
 							$table->addIndex(array($column->getName()));
-						} elseif($pVal == 'unsigned') {
+						} elseif($pVal === 'unsigned') {
 							$column->setUnsigned(true);
 						} else {
 							switch (strtolower($pKey)) {
@@ -113,6 +113,7 @@ abstract class Manager
 								case 'notnull': $column->setNotnull($pVal);break;
 								case 'ai': $column->setAutoincrement($pVal);break;
 								case 'comment': $column->setComment($pVal);break;
+                                case 'default': $column->setDefault($pVal);break;
 								default: throw new \Exception("Unsupported parameter \"$pVal\" for column \"$key\"");
 							}
 						}
@@ -382,6 +383,12 @@ abstract class Manager
 		} else {
 			$data = $this->getDataArray($entity, false, true);
 			if (count($data)) {
+			    if ($this->isPostgresql()) {
+			        $columns = $this->getColumnsSchemas();
+			        if ($this->getIdColumnName() && $columns[$this->getIdColumnName()]->getAutoincrement()) {
+			            unset($data[$this->getIdColumnName()]);
+                    }
+                }
 				$connection->insert($this->getTableName(), $data);
 			}
 			$this->setFieldValue($entity, $this->getIdFieldName(), $connection->lastInsertId());
@@ -425,7 +432,8 @@ abstract class Manager
 		foreach ($this->getDbColumnNames() as $n) {
 			$columnNames[] = 'e.' . $n;
 		}
-		$qb->select(implode(', ', $columnNames))->from($this->getTableName(), 'e');
+		$tableName = $this->isPostgresql() ?  '"' . $this->getTableName() . '"' : $this->getTableName();
+		$qb->select(implode(', ', $columnNames))->from($tableName, 'e');
 
 		$cacheKey = null;
 		if (!$noCache) {
@@ -573,5 +581,10 @@ abstract class Manager
 
 		return new $className();
 	}
+
+	public function isPostgresql()
+    {
+        return $this->getConnection()->getDatabasePlatform()->getName() == 'postgresql';
+    }
 
 }

@@ -65,7 +65,7 @@ abstract class CrudController extends Controller
 		}
 
 		if ($this->getManager()->isRemovable()) {
-			$db->andWhere('removed <> 1');
+			$db->andWhere('removed <> true');
 		}
 		$this->modifyQuery($db);
 		$paginator = new Paginator($db->select('COUNT(*)')->execute()->fetchColumn(0), $this->getItemsPerPage(), $this->getRequest());
@@ -221,7 +221,7 @@ abstract class CrudController extends Controller
 		}
 
 		if ($this->getManager()->isRemovable()) {
-			$db->andWhere('removed <> 1');
+			$db->andWhere('removed <> true');
 		}
 		$this->modifyQuery($db);
 

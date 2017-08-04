@@ -4,7 +4,7 @@
     	<div class="srtiActions">
     		<div class="srtCol last">
 					{% for c in i %}
-						{% if c.type is sameas('actions') %}{% include templates.field with {col:c} %}{% endif %}
+						{% if c.type is same as('actions') %}{% include templates.field with {col:c} %}{% endif %}
 					{% endfor %}
 				</div>
     	</div>
@@ -26,7 +26,7 @@
 			<div class="srtiCols">
 				<div class="srtCol" title="{{ c.colTitle }}">
 					{% for key, c in i %}
-						{% if not (c.notForPrint or loop.index == 1 or key is sameas('parent') or key is sameas('children') or c.type is sameas('actions') ) %}
+						{% if not (c.notForPrint or loop.index == 1 or key is same as('parent') or key is same as('children') or c.type is same as('actions') ) %}
 							<span class="srtColsVal" title="{{ c.colTitle|trans }}">{% include templates.field with {col:c} %}</span>
 						{% endif %}
 					{% endfor %}
