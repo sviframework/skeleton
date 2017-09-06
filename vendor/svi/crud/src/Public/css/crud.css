@@ -53,3 +53,15 @@
 .buttonsTopLine {
 	overflow:hidden;
 }
+
+.multipleChoice .mcLine:first-child {
+	padding-top: 6px;
+}
+.multipleChoice .mcLine label {
+	font-weight: normal;
+	display: inline-block;
+	margin-bottom: 0;
+}
+.multipleChoice .mcLine label input {
+	vertical-align: top;
+}

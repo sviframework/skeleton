@@ -329,9 +329,23 @@ abstract class CrudController extends Controller
 		throw new \Exception('function applyFilter not yet implemented in child class');
 	}
 
-	protected function checkForm(Form $form, $entity) {}
+	protected function checkForm(Form $form, $entity, array $exclude = [])
+    {
+        $data = $form->getData();
 
-	protected function save(Entity $entity, Form $form, array $exclude = array())
+        foreach ($data as $key => $value) {
+            if (!in_array($key, $exclude) && strpos($key, 'deletefile_') === false) {
+                $this->checkField($form, $entity, $key);
+            }
+        }
+    }
+
+    protected function checkField(Form $form, $entity, $key)
+    {
+        // There is no default checks of CRUD form fields
+    }
+
+	protected function save(Entity $entity, Form $form, array $exclude = [])
 	{
 		$data = $form->getData();
 

@@ -5,6 +5,12 @@ $(document).ready(function(){
 $.fn.fileInput = function(){
 	return this.each(function(){
 		var input = $(this);
+
+		if (input.data('fileInput')) {
+			return true;
+		}
+		input.data('fileInput', true);
+
 		var file = input.attr('data-file');
 		if (file) {
 			var image = input.attr('data-image');

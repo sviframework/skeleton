@@ -1,4 +1,4 @@
-<form class="form-horizontal" action="{{ action }}" method="{{ method }}" {% if noValidate %}novalidate{% endif %} id="form{% if name %}_{{ name }}{% endif %}" {% if enctype %}enctype="{{ enctype }}"{% endif %} {% if attr %}{% for k, v in attr %}{{ k }}="{{ v }}" {% endfor %}{% endif %}>
+<form class="form-horizontal{% if attr.class %} {{ attr.class }}{% endif %}" action="{{ action }}" method="{{ method }}" {% if noValidate %}novalidate{% endif %} id="form{% if name %}_{{ name }}{% endif %}" {% if enctype %}enctype="{{ enctype }}"{% endif %} {% if attr %}{% for k, v in attr %}{{ k }}="{{ v }}" {% endfor %}{% endif %}>
 	<input type="hidden" name="form_id" value="{{ id }}" />
 	{% if errors|length %}
 		{% for e in errors %}

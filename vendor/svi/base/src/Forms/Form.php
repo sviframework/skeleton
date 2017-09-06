@@ -94,7 +94,8 @@ class Form
 	public function add($name, $type, array $parameters = array())
 	{
 		if (is_string($name)) {
-			$className = __NAMESPACE__ . '\\' . ucfirst(strtolower($type)) . 'Field';
+			$className = __NAMESPACE__ . '\\' .
+                str_replace('_', '', ucwords(strtolower($type), '_')) . 'Field';
 			$this->addField(new $className($name, $parameters));
 		} else {
 			$this->addField($name);

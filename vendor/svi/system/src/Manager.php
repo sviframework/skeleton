@@ -79,7 +79,7 @@ abstract class Manager
 
 			$dbColumnsToFieldNames = [];
 			$fieldToColumnNames = [];
-			$columns = array();
+			$columns = [];
 			foreach ($this->getDbFieldsDefinition() as $key => $value) {
 				$column = $table->addColumn($value[0], $value[1]);
 				if (count($value) > 2) {
@@ -350,6 +350,20 @@ abstract class Manager
 		return $result;
 	}
 
+    /**
+     * @param array $data
+     * @return Entity[]
+     */
+	final public function getListByData(array $data)
+    {
+        $result = [];
+
+        foreach ($data as $entityData) {
+            $result[] = $this->fillByData($entityData);
+        }
+
+        return $result;
+    }
 
 	/**
 	 * Fills class fields by SQL returned data

@@ -5,7 +5,12 @@ $(document).ready(function(){
 $.fn.crudSortable = function(){
 	return this.each(function(){
 		var container = $(this);
-		var weightAjax = container.attr('data-weight');
+
+		if (container.data('crudSortable')) {
+			return true;
+		}
+		container.data('crudSortable', true);
+
 		var params = {
 			axis:'y',
 			cursor:'move',
@@ -15,12 +20,12 @@ $.fn.crudSortable = function(){
 				var weights = [];
 				container.find('li').each(function(index){
 					var parent = $(this).parents('li:first');
-					if (parent.size()) {
+					if (parent.length) {
 						parent = parent.attr('data-id');
 					} else {
 						parent = 0;
 					}
-					if ($(this).find('ul > li').size()) {
+					if ($(this).find('ul > li').length) {
 						$(this).find('.removeAction').hide();
 					} else {
 						$(this).find('.removeAction').show();

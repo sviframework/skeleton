@@ -3,7 +3,19 @@
 		{% if required %}<span class="req text-danger" title="{{ 'forms.required'|trans }}">*</span>{% endif %}
 	</label>
 	<div class="col-sm-5">
-		<input type="{{ inputType }}" class="form-control{% if class %} {{ class }}{% endif %}" id="{{ id }}" name="{{ name }}" {% if placeholder|trans %}placeholder="{{ placeholder }}"{% endif %} {% if required %}required="1"{% endif %} value="{{ data }}" {% if attr %}{% for k, v in attr %}{{ k }}="{{ v }}" {% endfor %}{% endif %}/>
+		{% if before or after %}
+			<div class="input-group">
+		{% endif %}
+			{% if before %}
+				<div class="input-group-addon">{{ before }}</div>
+			{% endif %}
+			<input type="{{ inputType }}" class="form-control{% if class %} {{ class }}{% endif %}" id="{{ id }}" name="{{ name }}" {% if placeholder|trans %}placeholder="{{ placeholder }}"{% endif %} {% if required %}required="1"{% endif %} value="{{ data }}" {% if attr %}{% for k, v in attr %}{{ k }}="{{ v }}" {% endfor %}{% endif %}/>
+			{% if after %}
+				<div class="input-group-addon">{{ after }}</div>
+			{% endif %}
+		{% if before or after %}
+			</div>
+		{% endif %}
 		{% if help %}
 			<span class="help-block">{{ help|trans }}</span>
 		{% endif %}
