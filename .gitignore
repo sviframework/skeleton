@@ -3,8 +3,6 @@
 !app/cache/.gitkeep
 /app/logs/*
 !app/logs/.gitkeep
-/app/config/config.php
-/app/config/bundles.php
 /app/config/parameters.php
 /web/.htaccess
 /web/bundles/*
@@ -15,6 +13,5 @@
 composer.json
 composer.phar
 composer.lock
-/src/Test
 /vendor/*
 !vendor/svi

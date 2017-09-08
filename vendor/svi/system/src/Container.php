@@ -2,6 +2,8 @@
 
 namespace Svi;
 
+use Doctrine\DBAL\Connection;
+
 class Container
 {
 	private static $instances = array();
@@ -51,7 +53,7 @@ class Container
 
 	/**
 	 * @param string $schema
-	 * @return mixed
+	 * @return Connection
 	 */
 	public function getDb($schema = 'default')
 	{

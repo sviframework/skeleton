@@ -37,22 +37,9 @@ abstract class Controller
 		return $parameters;
 	}
 
-	/**
-	 * @return \Doctrine\DBAL\Query\QueryBuilder
-	 */
-	function createQB()
-	{
-		return $this->c->getDb()->createQueryBuilder();
-	}
-
 	public function getParameter($key)
 	{
 		return $this->c->getApp()->getConfig()->getParameter($key);
-	}
-
-	public function getDb()
-	{
-		return $this->c->getDb();
 	}
 
 	public function redirect($route, array $parameters = [])

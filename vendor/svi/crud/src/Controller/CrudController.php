@@ -45,7 +45,10 @@ abstract class CrudController extends Controller
 		$sorter = new Sorter($sortableColumns, $this->getRequest());
 		$sorter->processColumns($templateTable['columns']);
 
-		$db = $this->createQB()->from($this->getManager()->getTableName(), '');
+
+		$db = $this->c->getDb()->createQueryBuilder()
+            ->select('e.*')
+            ->from($this->getManager()->getTableName(), 'e');
 
 		$filter = $this->createForm(['method' => 'get']);
 		$filter->setMethod('get');
@@ -202,7 +205,9 @@ abstract class CrudController extends Controller
 
 		$routes = $this->getRoutes();
 
-		$db = $this->createQB()->from($this->getManager()->getTableName(), '');
+		$db = $this->c->getDb()->createQueryBuilder()
+            ->select('e.*')
+            ->from($this->getManager()->getTableName(), 'e');
 
 		$filter = $this->createForm(['method' => 'get']);
 		$filter->setMethod('get');
