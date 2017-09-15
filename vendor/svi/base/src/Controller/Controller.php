@@ -25,6 +25,7 @@ abstract class Controller extends \Svi\Controller
 
 	protected function jsonError($message = '', array $data = array())
 	{
+	    $data['success'] = false;
 		$data['error'] = true;
 		$data['errorMessage'] = $message;
 
@@ -33,6 +34,7 @@ abstract class Controller extends \Svi\Controller
 
 	protected function jsonSuccess(array $data = array())
 	{
+	    $data['success'] = true;
 		$data['error'] = false;
 
 		return $this->json($data);

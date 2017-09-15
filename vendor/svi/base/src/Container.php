@@ -10,7 +10,7 @@ class Container extends \Svi\Container
 	 */
 	public function getSviBaseBundle()
 	{
-		return $this->getApp()->get('bundle.svibase');
+		return $this->getApp()->get(Bundle::class);
 	}
 
 	/**
@@ -18,7 +18,7 @@ class Container extends \Svi\Container
 	 */
 	public function getSviMailBundle()
 	{
-		return $this->getApp()->get('bundle.svimail');
+		return $this->getApp()->get(\Svi\Mail\Bundle::class);
 	}
 
 	/**
@@ -26,15 +26,15 @@ class Container extends \Svi\Container
 	 */
 	public function getSviFileBundle()
 	{
-		return $this->getApp()->get('bundle.svifile');
+		return $this->getApp()->get(\Svi\File\Bundle::class);
 	}
 
 	/**
-	 * @return \Svi\File\Bundle
+	 * @return \Svi\Crud\Bundle
 	 */
 	public function getSviCrudBundle()
 	{
-		return $this->getApp()->get('bundle.svifile');
+		return $this->getApp()->get(\Svi\Crud\Bundle::class);
 	}
 
 } 

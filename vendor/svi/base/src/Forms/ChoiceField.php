@@ -30,7 +30,7 @@ class ChoiceField extends Field
 			$choices[$key] = [
 				'key' => $key,
 				'value' => $value,
-				'selected' => $key === $this->getData(),
+				'selected' => is_array($this->getData()) ? false : (string)$key === (string)$this->getData(),
 			];
 		}
 

@@ -8,16 +8,26 @@ class TimestampField extends TextField
 	public function getViewParameters()
 	{
 		return array_merge(parent::getViewParameters(), [
-			'data' => date('d.m.Y' . ($this->getWithTime() ? ' H:i' : ''), $this->getData()),
+			'data' => $this->getData() ? date('d.m.Y' . ($this->getWithTime() ? ' H:i' : ''), $this->getData()) : null,
 		]);
 	}
 
 	public function setData($value)
 	{
-		if (is_numeric($value)) {
+        $value = trim($value);
+
+	    if (!$value) {
+	        parent::setData(null);
+        } elseif (is_numeric($value)) {
 			parent::setData($value);
 		} else {
-			parent::setData(\DateTime::createFromFormat('d.m.Y' . ($this->getWithTime() ? ' H:i' : ''), $value)->getTimestamp());
+			parent::setData(
+			    \DateTime::createFromFormat(
+                        'd.m.Y H:i',
+                        $value . ($this->getWithTime() ? '' : ' 00:00'),
+                        new \DateTimeZone(date_default_timezone_get())
+                    )->getTimestamp()
+            );
 		}
 	}
 

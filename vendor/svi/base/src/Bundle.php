@@ -13,16 +13,16 @@ class Bundle extends \Svi\Bundle
 	protected function getServices()
 	{
 		return [
-			'service.sviform' => 'Service\FormService',
-			'service.svisettings' => 'Service\SettingsService',
-			'service.svialerts' => 'Service\AlertsService'
+			FormService::class,
+			SettingsService::class,
+			AlertsService::class,
 		];
 	}
 
 	protected function getManagers()
 	{
 		return [
-			'manager.setting' => 'Manager\SettingManager',
+			SettingManager::class,
 		];
 	}
 
@@ -31,7 +31,7 @@ class Bundle extends \Svi\Bundle
 	 */
 	public function getFormService()
 	{
-		return $this->getApp()->get('service.sviform');
+		return $this->getApp()->get(FormService::class);
 	}
 
 	/**
@@ -39,7 +39,7 @@ class Bundle extends \Svi\Bundle
 	 */
 	public function getAlertsService()
 	{
-		return $this->getApp()->get('service.svialerts');
+		return $this->getApp()->get(AlertsService::class);
 	}
 
 	/**
@@ -47,7 +47,7 @@ class Bundle extends \Svi\Bundle
 	 */
 	public function getSettingsService()
 	{
-		return $this->getApp()->get('service.svisettings');
+		return $this->getApp()->get(SettingsService::class);
 	}
 
 	/**
@@ -55,7 +55,7 @@ class Bundle extends \Svi\Bundle
 	 */
 	public function getSettingsManager()
 	{
-		return $this->getApp()->get('manager.setting');
+		return $this->getApp()->get(SettingManager::class);
 	}
 
 } 

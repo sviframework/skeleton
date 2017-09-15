@@ -13,7 +13,7 @@ class Form
 	 */
 	private $c;
 	private $action = '';
-	private $namespace;
+	/** @var Field[] $fields */
 	private $fields = array();
 	private $parameters;
 	private $method = 'post';

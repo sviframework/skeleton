@@ -21,8 +21,8 @@ class Bundle extends \Svi\Bundle
 	protected function getServices()
 	{
 		return [
-			'service.svifile' => 'Service\FileService',
-			'service.sviimage' => 'Service\ImageService',
+			FileService::class,
+			ImageService::class,
 		];
 	}
 
@@ -31,7 +31,7 @@ class Bundle extends \Svi\Bundle
 	 */
 	public function getFileService()
 	{
-		return $this->getApp()->get('service.svifile');
+		return $this->getApp()->get(FileService::class);
 	}
 
 	/**
@@ -39,7 +39,7 @@ class Bundle extends \Svi\Bundle
 	 */
 	public function getImageService()
 	{
-		return $this->getApp()->get('service.sviimage');
+		return $this->getApp()->get(ImageService::class);
 	}
 
 } 

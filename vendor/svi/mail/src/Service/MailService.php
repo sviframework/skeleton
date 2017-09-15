@@ -49,12 +49,12 @@ class MailService extends ContainerAware
 
 			if ($this->c->getConfig()->getParameter('mail.spool')) {
 				$spool = new \Swift_FileSpool($this->c->getApp()->getRootDir() . '/' . $this->c->getConfig()->getParameter('mail.spool'));
-				$transport = \Swift_SpoolTransport::newInstance($spool);
+				$transport = new \Swift_SpoolTransport($spool);
 			} else {
 				$transport = $this->getRealTransport();
 			}
 
-			$this->swift = \Swift_Mailer::newInstance($transport);
+			$this->swift = new \Swift_Mailer($transport);
 		}
 
 		return $this->swift;
@@ -64,7 +64,7 @@ class MailService extends ContainerAware
 	{
 		switch ($this->c->getConfig()->getParameter('mail.transport')) {
 			case 'mail':
-				$transport = new \Swift_MailTransport();
+				$transport = new \Swift_SendmailTransport();
 				break;
 			case 'smtp':
 				if (!$this->c->getConfig()->getParameter('mail.host')) {
@@ -72,12 +72,6 @@ class MailService extends ContainerAware
 				}
 				if (!$this->c->getConfig()->getParameter('mail.port')) {
 					throw new \Exception('No mail.port defined for smtp in config');
-				}
-				if (!$this->c->getConfig()->getParameter('mail.user')) {
-					throw new \Exception('No mail.user defined for smtp in config');
-				}
-				if (!$this->c->getConfig()->getParameter('mail.password')) {
-					throw new \Exception('No mail.password defined for smtp in config');
 				}
 				$transport = new \Swift_SmtpTransport(
 					$this->c->getConfig()->getParameter('mail.host'),
@@ -91,7 +85,7 @@ class MailService extends ContainerAware
 		}
 
 		if (!$transport) {
-			throw new \Exception('No correct mail.transport defined in config (corrects: mail, smtp)');
+			throw new \Exception('No correct mail.transport defined in config (correct are: mail, smtp)');
 		}
 
 		return $transport;

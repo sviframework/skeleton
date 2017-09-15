@@ -33,7 +33,7 @@ abstract class Bundle
 			return include $file;
 		}
 
-		return array();
+		return [];
 	}
 
 	/**
@@ -133,23 +133,21 @@ abstract class Bundle
 
 	private function loadServices()
 	{
-		foreach ($this->getServices() as $name => $class) {
-			$className = $this->getNamespace().'\\'.$class;
-			$this->app->getSilex()[$name] = function () use ($className) {
-				return new $className($this->app);
+		foreach ($this->getServices() as $class) {
+			$this->app->getSilex()[$class] = function () use ($class) {
+				return new $class($this->app);
 			};
-			$this->services[] = $name;
+			$this->services[] = $class;
 		}
 	}
 
 	private function loadManagers()
 	{
-		foreach ($this->getManagers() as $name => $class) {
-			$className = $this->getNamespace() . '\\' . $class;
-			$this->app->getSilex()[$name] = function () use ($className) {
-				return new $className($this->app);
+		foreach ($this->getManagers() as $class) {
+			$this->app->getSilex()[$class] = function () use ($class) {
+				return new $class($this->app);
 			};
-			$this->managers[] = $name;
+			$this->managers[] = $class;
 		}
 	}
 

@@ -10,7 +10,7 @@ class Bundle extends \Svi\Bundle
 	protected function getServices()
 	{
 		return [
-			'service.svimail' => 'Service\MailService',
+			MailService::class,
 		];
 	}
 
@@ -19,7 +19,7 @@ class Bundle extends \Svi\Bundle
 	 */
 	public function getMailService()
 	{
-		return $this->getApp()->get('service.svimail');
+		return $this->getApp()->get(MailService::class);
 	}
 
 } 

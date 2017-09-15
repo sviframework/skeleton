@@ -14,7 +14,7 @@ class Bundles
 			/** @var Bundle $bundle */
 			$bundle = new $bundleName($app);
 			$this->bundles[] = $bundle;
-			$app['bundle.' . strtolower($bundle->getName())] = $bundle;
+			$app[$bundleName] = $bundle;
 		}
 	}
 

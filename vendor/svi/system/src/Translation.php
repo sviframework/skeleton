@@ -21,10 +21,8 @@ class Translation
 	{
 		$this->loadTranslations();
 
-		$result = @$this->translations[$string];
-		if ($result === null) {
-			$result = $string;
-		}
+		$result = array_key_exists($string, $this->translations) ? $this->translations[$string] : $string;
+
 		return count($params) ? str_replace(array_keys($params), $params, $result) : $result;
 	}
 
@@ -58,31 +56,31 @@ class Translation
 
 	protected function getTranslationsFromBundles()
 	{
-		$result = [];
-		$translations = [];
+	    $result = [];
+
+        $getPairs = function($key, array $value) use (&$getPairs) {
+            $result = array();
+            foreach ($value as $k => $v) {
+                $k = $key . '.' . $k;
+                if (!is_array($v)) {
+                    $result[$k] = $v;
+                } else {
+                    $result = array_merge($result, $getPairs($k, $v));
+                }
+            }
+
+            return $result;
+        };
+
 		/** @var Bundle $b */
 		foreach ($this->app->getBundles()->getBundles() as $b) {
-			$translations = array_merge($translations, $b->getTranslations($this->locale));
-		}
-		$getPairs = function($key, array $value) use (&$getPairs) {
-			$result = array();
-			foreach ($value as $k => $v) {
-				$k = $key . '.' . $k;
-				if (!is_array($v)) {
-					$result[$k] = $v;
-				} else {
-					$result = array_merge($result, $getPairs($k, $v));
-				}
-			}
-
-			return $result;
-		};
-		foreach ($translations as $key => $value) {
-			if (!is_array($value)) {
-				$result[$key] = $value;
-			} else {
-				$result = array_merge($result, $getPairs($key, $value));
-			}
+			foreach ($b->getTranslations($this->locale) as $key => $value) {
+			    if (!is_array($value)) {
+			        $result[$key] = $value;
+                } else {
+                    $result = array_merge($result, $getPairs($key, $value));
+                }
+            }
 		}
 
 		return $result;

@@ -3,6 +3,7 @@
 namespace Svi\Mail\Console;
 
 use Svi\ConsoleCommand;
+use Svi\Mail\Service\MailService;
 
 class SendSpoolCommand extends ConsoleCommand
 {
@@ -18,7 +19,7 @@ class SendSpoolCommand extends ConsoleCommand
 
 	public function execute(array $args)
 	{
-		$this->getApp()->get('service.svimail')->sendSpool();
+		$this->getApp()->get(MailService::class)->sendSpool();
 	}
 
 } 
