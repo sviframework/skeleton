@@ -36,7 +36,11 @@ abstract class UserService extends ContainerAware
 	protected function getRememberId()
 	{
 		if ($this->c->getCookies()->has('REMEMBERME')) {
-			$cookie = mcrypt_decrypt(MCRYPT_BLOWFISH, $this->getParameter('secret'), base64_decode($this->c->getCookies()->get('REMEMBERME')), MCRYPT_MODE_ECB);
+			$cookie = openssl_decrypt(
+                base64_decode($this->c->getCookies()->get('REMEMBERME')),
+			    'BF-CBC',
+                $this->getParameter('secret'), 0, 'fL34SpFw'
+            );
 			$data = explode('[|]', $cookie);
 			if (array_key_exists(1, $data)) {
 				return $data[1];
@@ -48,11 +52,10 @@ abstract class UserService extends ContainerAware
 
 	protected function remember($id)
 	{
-		$login = mcrypt_encrypt(
-			MCRYPT_BLOWFISH,
-			$this->getParameter('secret'),
-			time() . '[|]' . $id . '[|]' . microtime(),
-			MCRYPT_MODE_ECB);
+		$login = openssl_encrypt(
+            time() . '[|]' . $id . '[|]' . microtime(),
+            'BF-CBC',
+			$this->getParameter('secret'), 0, 'fL34SpFw');
 		$this->c->getCookies()->set('REMEMBERME', base64_encode($login), 60*60*24*365);
 	}
 
