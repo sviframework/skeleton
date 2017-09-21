@@ -1,9 +1,9 @@
 {
   "require": {
-    "silex/silex": ">=2.0.2",
-    "doctrine/dbal": ">=2.5.4",
-    "twig/twig": ">=1.24",
-    "swiftmailer/swiftmailer": ">=5.4.2"
+    "silex/silex": ">=2.2",
+    "doctrine/dbal": ">=2.5",
+    "twig/twig": ">=2.4",
+    "swiftmailer/swiftmailer": ">=6"
   },
   "autoload": {
     "psr-4": {

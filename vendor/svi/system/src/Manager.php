@@ -493,29 +493,22 @@ abstract class Manager
 		$connection = $this->getConnection();
 
 		$db = $connection->createQueryBuilder();
-		$columns = $this->getColumnsSchemas();
-		if (count($criteria)) {
-			foreach ($criteria as $col => $val) {
-				if (!isset($columns[$col])) {
-					throw new \Exception('There is no field "' . $col . '" in ' . $this->getEntityClassName());
-				}
-				/** @var Column $column */
-				$column = $columns[$col];
-				if ($val === null) {
-					$db->andWhere($column->getName() . " IS NULL");
-				} else {
-					$db->andWhere($column->getName() . " = :$col")->setParameter($col, $val);
-				}
-			}
-		}
+        if (count($criteria)) {
+            foreach ($criteria as $col => $val) {
+                if ($val === null) {
+                    $db->andWhere($col . " IS NULL");
+                } elseif (is_array($val)) {
+                    $db->andWhere($col . " IN (" . implode(', ', $val) . ')');
+                } elseif (is_numeric($col)) {
+                    $db->andWhere($val);
+                } else {
+                    $db->andWhere($col . " = :$col")->setParameter($col, $val);
+                }
+            }
+        }
 		if (is_array($orderBy) && count($orderBy)) {
 			foreach ($orderBy as $col => $val) {
-				if (!isset($columns[$col])) {
-					throw new \Exception('There is no field "' . $col . '" in ' . $this->getEntityClassName());
-				}
-				/** @var Column $column */
-				$column = $columns[$col];
-				$db->addOrderBy($column->getName(), $val);
+				$db->addOrderBy($col, $val);
 			}
 		}
 		if ($limit !== null) {
@@ -542,17 +535,28 @@ abstract class Manager
 	}
 
 	public function __call($name, $arguments) {
+	    $getTableColName = function ($field) {
+            $field = lcfirst($field);
+            $columns = $this->getDbColumnNames();
+            if (!array_key_exists($field, $columns)) {
+                throw new \Exception('There is no field ' . $field . ' in entity ' . $this->getEntityClassName());
+            }
+
+            return $columns[$field];
+        };
+
 		if (preg_match('/^findBy(.*)$/', $name, $matches)) {
 			if (count($arguments) < 1) {
 				throw new \Exception('Too few parameters');
 			}
-			return self::findBy([lcfirst($matches[1]) => $arguments[0]], @$arguments[1], @$arguments[2], @$arguments[3], @$arguments[4]);
+
+			return self::findBy([$getTableColName($matches[1]) => $arguments[0]], @$arguments[1], @$arguments[2], @$arguments[3], @$arguments[4]);
 		} elseif (preg_match('/^findOneBy(.*)$/', $name, $matches)) {
 			if (count($arguments) < 1) {
 				throw new \Exception('Too few parameters');
 			}
 
-			return $this->findOneBy([lcfirst($matches[1]) => $arguments[0]], @$arguments[1], @$arguments[2]);
+			return $this->findOneBy([$getTableColName($matches[1]) => $arguments[0]], @$arguments[1], @$arguments[2]);
 		}
 
 		throw new \ErrorException ('Call to Undefined Method ' . get_called_class() . '::' . $name . '()', 0, E_ERROR);

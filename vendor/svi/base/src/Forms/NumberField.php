@@ -16,7 +16,7 @@ class NumberField extends Field
     {
         parent::validateData();
 
-        if (!$this->hasErrors()) {
+        if (!$this->hasErrors() && $this->getData() !== '' && $this->getData() !== NULL) {
             if ($this->getDecimals()) {
                 if (!is_numeric($this->getData())) {
                     $this->addError('forms.numberIsNotAFloat');

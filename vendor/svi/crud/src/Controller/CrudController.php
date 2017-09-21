@@ -101,7 +101,7 @@ abstract class CrudController extends Controller
 
 	public function editAction($id)
 	{
-		if (!($entity = $this->getManager()->findOneBy([$this->getEntityIdFieldName() => $id]))) {
+		if (!($entity = $this->getManager()->findOneBy([$this->getEntityIdColumnName() => $id]))) {
 			throw new NotFoundHttpException();
 		}
 
@@ -110,7 +110,7 @@ abstract class CrudController extends Controller
 
 	function deleteAction($id)
 	{
-		if (!($entity = $this->getManager()->findOneBy([$this->getEntityIdFieldName() => $id]))) {
+		if (!($entity = $this->getManager()->findOneBy([$this->getEntityIdColumnName() => $id]))) {
 			throw new NotFoundHttpException();
 		}
 		$request = $this->getRequest();
@@ -246,7 +246,7 @@ abstract class CrudController extends Controller
 				/** @var NestedSortableInterface|Entity $i */
 				$parent = null;
 				$item['parent'] = $i->getParentId() ?
-					$this->getManager()->getFieldValue($this->getManager()->findOneBy([$this->getManager()->getIdColumnName() => $i->getParentId()]), $this->getEntityIdFieldName())
+					$this->getManager()->getFieldValue($this->getManager()->findOneBy([$this->getEntityIdColumnName() => $i->getParentId()]), $this->getEntityIdFieldName())
 					: false;
 				$item['children'] = array();
 			}
@@ -288,7 +288,7 @@ abstract class CrudController extends Controller
 		}
 		foreach ($data['weights'] as $weight) {
 			/** @var SortableInterface $i */
-			if ($i = $this->getManager()->findOneBy([$this->getEntityIdFieldName() => $weight['id']])) {
+			if ($i = $this->getManager()->findOneBy([$this->getEntityIdColumnName() => $weight['id']])) {
 				$i->setWeight($weight['weight']);
 				if ($this->getManager()->isNestedSortable()) {
 					/** @var NestedSortableInterface|Entity $i */
