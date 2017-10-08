@@ -2,10 +2,12 @@
 
 namespace Svi\Base\Service;
 
+use Svi\Base\BundleTrait;
 use Svi\Base\ContainerAware;
 
 class AlertsService extends ContainerAware
 {
+    use BundleTrait;
 
 	public function addAlert($type, $text)
 	{

@@ -122,14 +122,14 @@ abstract class CrudController extends Controller
 		}
 
 		$formDelete = $this->createForm()
-			->add('delete', 'hidden', array(
+			->add('delete', 'hidden', [
 				'data' => 'delete',
-			))
-			->add('submit', 'submit', array(
+            ])
+			->add('submit', 'submit', [
 				'label' => 'crud.delete',
 				'cancel' => $request->query->has('back') ? $request->query->get('back') : false,
 				'template' => 'svi/crud/src/Views/deleteSubmit',
-			));
+            ]);
 
 		if ($formDelete->handleRequest($request)->isValid()) {
 			if ($formDelete->get('delete')->getData() == 'delete') {
@@ -140,12 +140,12 @@ abstract class CrudController extends Controller
 			}
 		}
 
-		return $this->render($this->getDeleteTemplate(), $this->getTemplateParameters(array(
+		return $this->render($this->getDeleteTemplate(), $this->getTemplateParameters([
 			'className' => str_replace('\\', '', $this->getManager()->getEntityClassName()),
 			'entity' => $entity,
 			'formDelete' => $formDelete,
 			'baseTemplate' => $this->getBaseTemplate(),
-		)));
+        ]));
 	}
 
 	protected function getEditView(Entity $entity = null)

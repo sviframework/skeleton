@@ -3,11 +3,13 @@
 namespace Svi\File\Controller;
 
 use Svi\Base\Controller\Controller;
+use Svi\File\BundleTrait;
 use Symfony\Component\HttpFoundation\Request;
 use Svi\File\Classes\File;
 
 abstract class TinyMceUploadController extends Controller
 {
+    use BundleTrait;
 
 	public function imageAction(Request $request)
 	{
@@ -22,7 +24,7 @@ abstract class TinyMceUploadController extends Controller
 		$result = false;
 
 		if ($form->handleRequest($request)->isValid()) {
-			$file = new File($this->c->getSviFileBundle()->getFileService()
+			$file = new File($this->getFileService()
 				->uploadFile($form->get('upload')->getData(), 'uploaded_images/' . date('Ym')));
 			$result = $file->getUrl();
 		}

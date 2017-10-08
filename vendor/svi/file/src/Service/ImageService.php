@@ -3,10 +3,12 @@
 namespace Svi\File\Service;
 
 use Svi\Base\ContainerAware;
+use Svi\File\BundleTrait;
 use Svi\File\Classes\File;
 
 class ImageService extends ContainerAware
 {
+    use BundleTrait;
 
 	/**
 	 * @param $fileOrUri

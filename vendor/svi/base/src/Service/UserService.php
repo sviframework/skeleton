@@ -2,10 +2,12 @@
 
 namespace Svi\Base\Service;
 
+use Svi\Base\BundleTrait;
 use Svi\Base\ContainerAware;
 
 abstract class UserService extends ContainerAware
 {
+    use BundleTrait;
 
 	public function logout()
 	{

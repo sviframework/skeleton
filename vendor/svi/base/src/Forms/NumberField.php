@@ -22,7 +22,7 @@ class NumberField extends Field
                     $this->addError('forms.numberIsNotAFloat');
                 }
             } else {
-                if (!is_integer($this->getData())) {
+                if (!is_numeric($this->getData()) || !is_integer((int) $this->getData())) {
                     $this->addError('forms.numberIsNotAInteger');
                 }
             }

@@ -4,11 +4,13 @@ namespace Svi\File\Service;
 
 use Svi\Base\ContainerAware;
 use Svi\Base\Utils\Utils;
+use Svi\File\BundleTrait;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileService extends ContainerAware
 {
+    use BundleTrait;
 
 	public function getNewFileUriFromField($oldValue, UploadedFile $field = null, $destDir = null, $delete = false)
 	{

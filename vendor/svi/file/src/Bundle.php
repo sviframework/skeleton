@@ -9,6 +9,7 @@ use Svi\File\Twig\ImageTwigExtension;
 
 class Bundle extends \Svi\Bundle
 {
+    use BundleTrait;
 
 	function __construct(Application $app)
 	{
@@ -24,22 +25,6 @@ class Bundle extends \Svi\Bundle
 			FileService::class,
 			ImageService::class,
 		];
-	}
-
-	/**
-	 * @return FileService
-	 */
-	public function getFileService()
-	{
-		return $this->getApp()->get(FileService::class);
-	}
-
-	/**
-	 * @return ImageService
-	 */
-	public function getImageService()
-	{
-		return $this->getApp()->get(ImageService::class);
 	}
 
 } 
