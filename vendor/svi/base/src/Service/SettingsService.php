@@ -2,15 +2,12 @@
 
 namespace Svi\Base\Service;
 
-use Svi\Base\BundleTrait;
 use Svi\Base\ContainerAware;
 use Svi\Base\Entity\Setting;
 use Svi\Base\Manager\SettingManager;
 
 class SettingsService extends ContainerAware
 {
-    use BundleTrait;
-
 	private $allSettings;
 
 	public function getSettingsKeys()
@@ -101,7 +98,7 @@ class SettingsService extends ContainerAware
 	 */
 	protected function getManager()
 	{
-		return $this->getSettingsManager();
+		return $this->c->getApp()->get(SettingManager::class);
 	}
 
 }
