@@ -86,6 +86,9 @@ class Form
 		return true;
 	}
 
+    /**
+     * @return Field[]
+     */
 	public function getFields()
 	{
 		return $this->fields;

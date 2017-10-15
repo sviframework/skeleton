@@ -13,7 +13,7 @@ use Svi\Crud\Entity\SortableInterface;
 
 // Singleton
 
-abstract class Manager
+abstract class Manager implements ManagerInterface
 {
 	/** @var Application */
 	protected $app;
@@ -67,7 +67,7 @@ abstract class Manager
 	 * @return Table
 	 * @throws \Exception
 	 */
-	final public function getTableSchema()
+	public function getTableSchema()
 	{
 		if (!array_key_exists($this->getSchemaName(), self::$schemas)) {
 			self::$schemas[$this->getSchemaName()] = new Schema();
@@ -191,7 +191,7 @@ abstract class Manager
 	 * @return Column[]
 	 * @throws \Exception
 	 */
-	final public function getColumnsSchemas()
+	public function getColumnsSchemas()
 	{
 		if (!array_key_exists('columns', $this->cache)) {
 			$this->getTableSchema();
@@ -206,7 +206,7 @@ abstract class Manager
 	 * @param $fieldName
 	 * @return mixed
 	 */
-	final public function getFieldValue(Entity $entity, $fieldName)
+	public function getFieldValue(Entity $entity, $fieldName)
 	{
 		$method = 'get' . ucfirst($fieldName);
 
@@ -219,7 +219,7 @@ abstract class Manager
 	 * @param $value
 	 * @return mixed
 	 */
-	final public function setFieldValue(Entity $entity, $fieldName, $value)
+	public function setFieldValue(Entity $entity, $fieldName, $value)
 	{
 		$method = 'set' . ucfirst($fieldName);
 
@@ -231,7 +231,7 @@ abstract class Manager
 	 * @return mixed
 	 * @throws \Exception
 	 */
-	final public function getFieldValueByDbKey(Entity $entity, $dbFieldName)
+	public function getFieldValueByDbKey(Entity $entity, $dbFieldName)
 	{
 		$this->getTableSchema();
 		if (!array_key_exists('db_to_field', $this->cache) && !array_key_exists($dbFieldName, $this->cache['db_to_field'])) {
@@ -249,7 +249,7 @@ abstract class Manager
 	 * @param $value
 	 * @throws \Exception
 	 */
-	final public function setFieldValueByDbKey(Entity $entity, $dbFieldName, $value)
+	public function setFieldValueByDbKey(Entity $entity, $dbFieldName, $value)
 	{
 		$this->getTableSchema();
 		if (!array_key_exists('db_to_field', $this->cache) && !array_key_exists($dbFieldName, $this->cache['db_to_field'])) {
@@ -276,7 +276,7 @@ abstract class Manager
 	 *
 	 * @return string
 	 */
-	final public function getIdFieldName()
+	public function getIdFieldName()
 	{
 		$this->getTableSchema();
 
@@ -288,14 +288,14 @@ abstract class Manager
 	 *
 	 * @return mixed
 	 */
-	final public function getIdColumnName()
+	public function getIdColumnName()
 	{
 		$this->getTableSchema();
 
 		return $this->cache['idColumnName'];
 	}
 
-	final public function getDbColumnNames()
+	public function getDbColumnNames()
 	{
 		$this->getTableSchema();
 
@@ -311,7 +311,7 @@ abstract class Manager
 	 * @param bool $updateLoadedData
 	 * @return array
 	 */
-	final public function getDataArray(Entity $entity, $onlyChanged = false, $updateLoadedData = false)
+	public function getDataArray(Entity $entity, $onlyChanged = false, $updateLoadedData = false)
 	{
 		$result = array();
 
@@ -354,7 +354,7 @@ abstract class Manager
      * @param array $data
      * @return Entity[]
      */
-	final public function getListByData(array $data)
+	public function getListByData(array $data)
     {
         $result = [];
 
@@ -372,7 +372,7 @@ abstract class Manager
 	 * @param Entity|null $entity
 	 * @return Entity
 	 */
-	final public function fillByData(array $data, Entity $entity = null)
+	public function fillByData(array $data, Entity $entity = null)
 	{
 		$entity = $entity ? $entity : $this->createEntity();
 		$entity->setLoadedData($data);
@@ -565,7 +565,7 @@ abstract class Manager
 	/**
 	 * @return \ReflectionClass
 	 */
-	public function getReflection()
+    protected function getReflection()
 	{
 		if ($this->reflection === null) {
 			$this->reflection = new \ReflectionClass($this->getEntityClassName());
