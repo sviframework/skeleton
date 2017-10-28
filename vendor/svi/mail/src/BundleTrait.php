@@ -1,12 +1,12 @@
 <?php
 
-namespace Svi\Mail;
+namespace Svi\MailBundle;
 
-use Svi\Mail\Service\MailService;
+use Svi\MailBundle\Service\MailService;
 
 trait BundleTrait
 {
-    use \Svi\BundleTrait;
+    use \Svi\Service\BundlesService\BundleTrait;
 
     /**
      * @return MailService

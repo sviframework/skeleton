@@ -1,15 +1,15 @@
 <?php
 
-namespace Svi\Base;
+namespace Svi\BaseBundle;
 
-use Svi\Base\Manager\SettingManager;
-use Svi\Base\Service\AlertsService;
-use Svi\Base\Service\FormService;
-use Svi\Base\Service\SettingsService;
+use Svi\BaseBundle\Manager\SettingManager;
+use Svi\BaseBundle\Service\AlertsService;
+use Svi\BaseBundle\Service\FormService;
+use Svi\BaseBundle\Service\SettingsService;
 
 trait BundleTrait
 {
-    use \Svi\BundleTrait;
+    use \Svi\Service\BundlesService\BundleTrait;
 
     /**
      * @return FormService

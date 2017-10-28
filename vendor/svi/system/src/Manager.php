@@ -7,9 +7,9 @@ use \Doctrine\DBAL\Schema\Table;
 use \Doctrine\DBAL\Schema\Column;
 use \Doctrine\DBAL\Connection;
 use \Doctrine\DBAL\Query\QueryBuilder;
-use Svi\Crud\Entity\NestedSortableInterface;
-use Svi\Crud\Entity\RemovableInterface;
-use Svi\Crud\Entity\SortableInterface;
+use Svi\CrudBundle\Entity\NestedSortableInterface;
+use Svi\CrudBundle\Entity\RemovableInterface;
+use Svi\CrudBundle\Entity\SortableInterface;
 
 // Singleton
 
@@ -40,7 +40,7 @@ abstract class Manager implements ManagerInterface
 	 */
 	public function getConnection()
 	{
-		return $this->app->getSilex()['dbs'][$this->schemaName];
+		return $this->app['dbs'][$this->schemaName];
 	}
 
 	/**
@@ -550,13 +550,19 @@ abstract class Manager implements ManagerInterface
 				throw new \Exception('Too few parameters');
 			}
 
-			return self::findBy([$getTableColName($matches[1]) => $arguments[0]], @$arguments[1], @$arguments[2], @$arguments[3], @$arguments[4]);
+			return self::findBy([$getTableColName($matches[1]) => $arguments[0]],
+                isset($arguments[1]) ? $arguments[1] : null,
+                isset($arguments[2]) ? $arguments[2] : null,
+                isset($arguments[3]) ? $arguments[3] : null,
+                isset($arguments[4]) ? $arguments[4] : null);
 		} elseif (preg_match('/^findOneBy(.*)$/', $name, $matches)) {
 			if (count($arguments) < 1) {
 				throw new \Exception('Too few parameters');
 			}
 
-			return $this->findOneBy([$getTableColName($matches[1]) => $arguments[0]], @$arguments[1], @$arguments[2]);
+			return $this->findOneBy([$getTableColName($matches[1]) => $arguments[0]],
+                isset($arguments[1]) ? $arguments[1] : null,
+                isset($arguments[2]) ? $arguments[2] : null);
 		}
 
 		throw new \ErrorException ('Call to Undefined Method ' . get_called_class() . '::' . $name . '()', 0, E_ERROR);

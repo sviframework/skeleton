@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Utils;
+namespace Svi\BaseBundle\Utils;
 
 use Symfony\Component\HttpFoundation\Request;
 
@@ -61,7 +61,7 @@ class Sorter
 		$arguments = array();
 		foreach ($pairs as $pair) {
 			$arg = explode('=', $pair);
-			$arguments[$arg[0]] = @$arg[1];
+			$arguments[$arg[0]] = isset($arg[1]) ? $arg[1] : null;
 		}
 		$arguments['order_by'] = $by;
 		$arguments['order'] = $by == $this->by ? $this->order == 'desc' ? 'asc' : 'desc' : $this->order;

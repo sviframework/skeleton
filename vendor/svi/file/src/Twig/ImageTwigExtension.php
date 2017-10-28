@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\File\Twig;
+namespace Svi\FileBundle\Twig;
 
 use Svi\Application;
 

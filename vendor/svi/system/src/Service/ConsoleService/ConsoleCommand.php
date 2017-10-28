@@ -1,6 +1,8 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service\ConsoleService;
+
+use Svi\Application;
 
 abstract class ConsoleCommand
 {

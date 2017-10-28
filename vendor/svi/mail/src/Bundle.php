@@ -1,10 +1,10 @@
 <?php
 
-namespace Svi\Mail;
+namespace Svi\MailBundle;
 
-use Svi\Mail\Service\MailService;
+use Svi\MailBundle\Service\MailService;
 
-class Bundle extends \Svi\Bundle
+class Bundle extends \Svi\Service\BundlesService\Bundle
 {
     use BundleTrait;
 

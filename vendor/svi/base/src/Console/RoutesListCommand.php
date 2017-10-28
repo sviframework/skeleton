@@ -1,6 +1,8 @@
 <?php
 
-namespace Svi;
+namespace Svi\BaseBundle\Console;
+
+use Svi\Service\ConsoleService\ConsoleCommand;
 
 class RoutesListCommand extends ConsoleCommand
 {
@@ -17,7 +19,7 @@ class RoutesListCommand extends ConsoleCommand
 
 	public function execute(array $args)
 	{
-		$routes = $this->getApp()->getRouting()->getAllRoutes();
+		$routes = $this->getApp()->getRoutingService()->getAllRoutes();
 		ksort($routes);
 
 		foreach ($routes as $key => $r) {

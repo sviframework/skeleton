@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
 class TextareaField extends Field
 {

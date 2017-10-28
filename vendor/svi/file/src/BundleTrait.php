@@ -1,13 +1,13 @@
 <?php
 
-namespace Svi\File;
+namespace Svi\FileBundle;
 
-use Svi\File\Service\FileService;
-use Svi\File\Service\ImageService;
+use Svi\FileBundle\Service\FileService;
+use Svi\FileBundle\Service\ImageService;
 
 trait BundleTrait
 {
-    use \Svi\BundleTrait;
+    use \Svi\Service\BundlesService\BundleTrait;
 
     /**
      * @return FileService

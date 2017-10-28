@@ -1,12 +1,12 @@
 <?php
 
-namespace Svi\Base\Controller;
+namespace Svi\BaseBundle\Controller;
 
-use Svi\Base\Container;
+use Svi\BaseBundle\Container;
 use Svi\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-abstract class Controller extends \Svi\Controller
+abstract class Controller extends \Svi\Service\HttpService\Controller
 {
 	/**
 	 * @var Container
@@ -15,6 +15,8 @@ abstract class Controller extends \Svi\Controller
 
 	function __construct(Application $app)
 	{
+	    parent::__construct($app);
+
 		$this->c = Container::getInstance($app);
 	}
 

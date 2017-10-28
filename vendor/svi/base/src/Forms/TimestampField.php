@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
 class TimestampField extends TextField
 {
@@ -40,7 +40,7 @@ class TimestampField extends TextField
 
 	public function getWithTime()
 	{
-		return @$this->parameters['withTime'];
+		return isset($this->parameters['withTime']) ? $this->parameters['withTime'] : null;
 	}
 
 } 

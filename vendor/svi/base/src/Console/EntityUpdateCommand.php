@@ -1,8 +1,9 @@
 <?php
 
-namespace Svi;
+namespace Svi\BaseBundle\Console;
 
 use Doctrine\DBAL\Schema\Schema;
+use Svi\Service\ConsoleService\ConsoleCommand;
 
 class EntityUpdateCommand extends ConsoleCommand
 {
@@ -59,7 +60,7 @@ class EntityUpdateCommand extends ConsoleCommand
 	{
 		/** @var Schema[] $schemas */
 		$schemas = [];
-		$managers = $this->getApp()->getBundles()->getManagerInstances();
+		$managers = $this->getApp()->getBundlesService()->getManagerInstances();
 		foreach ($managers as $manager) {
 			$manager->getTableSchema();
 			$schemas[$manager->getSchemaName()] = $manager->getDbSchema();

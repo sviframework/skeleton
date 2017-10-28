@@ -1,11 +1,12 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Svi\Application;
+use Svi\Exception\AccessDeniedHttpException;
+use Svi\Exception\NotFoundHttpException;
 
-class Logger
+class LoggerService
 {
 	/**
 	 * @var Application
@@ -49,7 +50,7 @@ class Logger
 		return true;
 	}
 
-	public function handleException(\Exception $e)
+	public function handleException(\Throwable $e)
 	{
 		if ($e instanceof AccessDeniedHttpException || $e instanceof NotFoundHttpException) {
 			return;

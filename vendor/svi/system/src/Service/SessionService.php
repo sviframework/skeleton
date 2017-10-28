@@ -1,8 +1,10 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class Session
+use Svi\Application;
+
+class SessionService
 {
 	/**
 	 * @var Application
@@ -27,7 +29,7 @@ class Session
 
 	public function get($key)
 	{
-		return @$_SESSION[$key];
+		return isset($_SESSION[$key]) ? $_SESSION[$key] : null;
 	}
 
 } 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Entity;
+namespace Svi\BaseBundle\Entity;
 
 interface SelectableInterface
 {

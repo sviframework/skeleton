@@ -1,11 +1,11 @@
 <?php
 
-namespace Svi\File\Controller;
+namespace Svi\FileBundle\Controller;
 
-use Svi\Base\Controller\Controller;
-use Svi\File\BundleTrait;
+use Svi\BaseBundle\Controller\Controller;
+use Svi\FileBundle\BundleTrait;
 use Symfony\Component\HttpFoundation\Request;
-use Svi\File\Classes\File;
+use Svi\FileBundle\Classes\File;
 
 abstract class TinyMceUploadController extends Controller
 {

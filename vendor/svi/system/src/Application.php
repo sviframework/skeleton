@@ -2,271 +2,224 @@
 
 namespace Svi;
 
-use \Symfony\Component\Debug\ErrorHandler;
-use \Symfony\Component\Debug\ExceptionHandler;
-use \Silex\Provider\DoctrineServiceProvider;
-use \Silex\Provider\ServiceControllerServiceProvider;
-use \Silex\Provider\TwigServiceProvider;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
+use Svi\Service\BundlesService;
+use Svi\Service\ConfigService;
+use Svi\Service\ConsoleService;
+use Svi\Service\CookiesService;
+use Svi\Service\ExceptionService;
+use Svi\Service\HttpService;
+use Svi\Service\LoggerService;
+use Svi\Service\RoutingService;
+use Svi\Service\SessionService;
+use Svi\Service\TemplateService;
+use Svi\Service\TranslationService;
 
-class Application implements \ArrayAccess
+class Application extends ArrayAccess
 {
-	private $instanceId;
+    private $instanceId;
 
-	/**
-	 * @var Logger
-	 */
-	private $logger;
+    public function __construct($config = null, array $argv = null)
+    {
+        $this->instanceId = md5(time() . microtime() . rand());
 
-	private $console;
-	/**
-	 * @var \Silex\Application
-	 */
-	private $silex;
+        $this['console'] = !!$argv;
 
-	/**
-	 * @var Config
-	 */
-	private $config;
+        umask(0000);
+        $loader = require $this->getRootDir() . '/vendor/autoload.php';
 
-	/**
-	 * @var Bundles
-	 */
-	private $bundles;
+        $loader->add('', $this->getRootDir() . '/src');
 
-	/**
-	 * @var Routing
-	 */
-	private $routing;
+        $this[ConfigService::class] = new ConfigService($this, $config);
+        $this['debug'] = $this->getConfigService()->get('debug');
+        $this[LoggerService::class] = new LoggerService($this);
 
-	/**
-	 * @var TemplateProcessor
-	 */
-	private $templateProcessor;
+        $this[ExceptionService::class] = new ExceptionService($this);
 
-	public function __construct($config = null, array $argv = null)
-	{
-		$this->instanceId = md5(time() . microtime() . rand());
+        if ($this->getConfigService()->get('dbs')) {
+            $this['dbs'] = new ArrayAccess();
+            foreach ($this->getConfigService()->get('dbs') as $name => $db) {
+                $this['dbs'][$name] = DriverManager::getConnection($db, new Configuration());
+            }
+        }
 
-		if ($argv) {
-			$this->console = true;
-		}
+        $this[TemplateService::class] = function () {
+            return new TemplateService($this);
+        };
 
-		umask(0000);
-		$loader = require $this->getRootDir() . '/vendor/autoload.php';
-		$this->silex = new \Silex\Application();
+        if (!$this->isConsole()) {
+            $this[SessionService::class] = function(){
+                return new SessionService($this);
+            };
 
-		$loader->add('', $this->getRootDir() . '/src');
+            $this[CookiesService::class] = function(){
+                return new CookiesService($this);
+            };
+        }
+        $this[TranslationService::class] = function(){
+            return new TranslationService($this);
+        };
 
-		$this->config = new Config($this, $config);
-		$this->silex['debug'] = $this->config->get('debug');
+        if (!$this->isConsole()) {
+            $this[HttpService::class] = new HttpService($this);
+        }
 
-		$this->logger = new Logger($this);
+        $this[BundlesService::class] = new BundlesService($this);
+        $this[RoutingService::class] = new RoutingService($this);
 
-		ErrorHandler::register();
-		$handler = ExceptionHandler::register($this->config->get('debug'));
-		$handler->setHandler([$this->logger, 'handleException']);
+        if ($this->isConsole()) {
+            $this[ConsoleService::class] = new ConsoleService($this, $argv);
+        }
+    }
 
-		if ($this->config->get('dbs')) {
-			$this->silex->register(new DoctrineServiceProvider(), [
-				'dbs.options' => $this->config->get('dbs'),
-			]);
-		}
+    public function run()
+    {
+        if (!$this->isConsole()) {
+            $this[HttpService::class]->run();
+        } else {
+            $this[ConsoleService::class]->run();
+        }
+    }
 
-		$this->templateProcessor = new TemplateProcessor($this);
-		$this->tryInitTwig();
+    /**
+     * @return ConfigService
+     */
+    public function getConfigService()
+    {
+        return $this[ConfigService::class];
+    }
 
-		if (!$this->console) {
-			$this->silex['session'] = function(){
-				return new Session($this);
-			};
+    /**
+     * @return RoutingService
+     */
+    public function getRoutingService()
+    {
+        return $this[RoutingService::class];
+    }
 
-			$this->silex['cookies'] = function(){
-				return new Cookies($this);
-			};
-		}
-		$this->silex['translation'] = function(){
-			return new Translation($this);
-		};
+    /**
+     * @return BundlesService
+     */
+    public function getBundlesService()
+    {
+        return $this[BundlesService::class];
+    }
 
-		$this->bundles = new Bundles($this);
+    /**
+     * @return HttpService
+     */
+    public function getHttpService()
+    {
+        return $this[HttpService::class];
+    }
 
-		if (!$this->console) {
-			$this->silex->register(new ServiceControllerServiceProvider());
-		}
-		$this->routing = new Routing($this);
+    /**
+     * @return \Symfony\Component\HttpFoundation\Request
+     */
+    public function getRequest()
+    {
+        return $this->getHttpService()->getRequest();
+    }
 
-		if ($this->console) {
-			$this->console = new Console($this, $argv);
-		}
-	}
+    /**
+     * @return SessionService
+     */
+    public function getSessionService()
+    {
+        return $this[SessionService::class];
+    }
 
-	public function run()
-	{
-		if (!$this->console) {
-			$this->getSilex()->run();
-		} else {
-			$this->console->run();
-		}
-	}
+    /**
+     * @return CookiesService
+     */
+    public function getCookiesService()
+    {
+        return $this[CookiesService::class];
+    }
 
-	public function tryInitTwig()
-	{
-		if ($this->getConfig()->get('twig')) {
-			$this->silex->register(new TwigServiceProvider(), [
-				'twig.path' => [
-					$this->getRootDir() . '/src',
-					$this->getRootDir() . '/vendor',
-				],
-				'twig.options' => [
-					'cache' => $this->silex['debug'] ? false : $this->getRootDir() . '/app/cache',
-				] + $this->getConfig()->get('twig'),
-			]);
-			$this->getSilex()['twig']->addExtension(new SilexTwigExtension($this));
-			$this->getTemplateProcessor()->addProcessor('twig', $this->getSilex()['twig']);
-		}
-	}
+    /**
+     * @return TranslationService
+     */
+    public function getTranslationService()
+    {
+        return $this[TranslationService::class];
+    }
 
-	/**
-	 * @return Config
-	 */
-	public function getConfig()
-	{
-		return $this->config;
-	}
+    /**
+     * @param string $schemaName
+     * @return \Doctrine\DBAL\Connection
+     * @throws \Exception
+     */
+    public function getDb($schemaName = 'default')
+    {
+        if (!$this->offsetExists('dbs')) {
+            throw new \Exception('dbs is not configured');
+        } elseif (!isset($this['dbs'][$schemaName])) {
+            throw new \Exception('dbs schema "' . $schemaName . '" is not configured');
+        }
 
-	/**
-	 * @return Routing
-	 */
-	public function getRouting()
-	{
-		return $this->routing;
-	}
+        return $this['dbs'][$schemaName];
+    }
 
-	/**
-	 * @return Bundles
-	 */
-	public function getBundles()
-	{
-		return $this->bundles;
-	}
+    /**
+     * @return LoggerService
+     */
+    public function getLogger()
+    {
+        return $this[LoggerService::class];
+    }
 
-	/**
-	 * @return \Silex\Application
-	 */
-	public function getSilex()
-	{
-		return $this->silex;
-	}
+    /**
+     * @return string Always returns current site dir with "/" in the end, so like /var/www/sample/www/sample.com/ will be returned
+     */
+    public function getRootDir()
+    {
+        return dirname(dirname(dirname(dirname(__DIR__))));
+    }
 
-	public function get($service)
-	{
-		if (!$this->offsetExists($service)) {
-			throw new \Exception('Service "' . $service . '" is not registered');
-		}
+    /**
+     * @return TemplateService
+     */
+    public function getTemplateService()
+    {
+        return $this[TemplateService::class];
+    }
 
-		return $this->offsetGet($service);
-	}
+    public function isConsole()
+    {
+        return $this['console'];
+    }
 
-	/**
-	 * @return \Symfony\Component\HttpFoundation\Request
-	 */
-	public function getRequest()
-	{
-		return $this->silex['request_stack']->getCurrentRequest();
-	}
+    public function getInstanceId()
+    {
+        return $this->instanceId;
+    }
 
-	/**
-	 * @return Session
-	 */
-	public function getSession()
-	{
-		return $this->get('session');
-	}
+    public function before($callback, $prepend = false)
+    {
+        if (!$this->isConsole()) {
+            $this->getHttpService()->before($callback, $prepend);
+        }
+    }
 
-	/**
-	 * @return Cookies
-	 */
-	public function getCookies()
-	{
-		return $this->get('cookies');
-	}
+    public function after($callback, $prepend = false)
+    {
+        if (!$this->isConsole()) {
+            $this->getHttpService()->after($callback, $prepend);
+        }
+    }
 
-	/**
-	 * @return Translation
-	 */
-	public function getTranslation()
-	{
-		return $this->get('translation');
-	}
+    public function finish($callback, $prepend = false)
+    {
+        if (!$this->isConsole()) {
+            $this->getHttpService()->finish($callback, $prepend);
+        }
+    }
 
-	/**
-	 * @param string $schemaName
-	 * @return \Doctrine\DBAL\Connection
-	 * @throws \Exception
-	 */
-	public function getDb($schemaName = 'default')
-	{
-		if (!$this->offsetExists('dbs')) {
-			throw new \Exception('dbs is not configured');
-		} elseif (!isset($this->silex['dbs'][$schemaName])) {
-			throw new \Exception('dbs schema "' . $schemaName . '" is not configured');
-		}
-
-		return $this->silex['dbs'][$schemaName];
-	}
-
-	/**
-	 * @return \Svi\Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
-
-	/**
-	 * @return string Always returns current site dir with "/" in the end, so like /var/www/sample/www/sample.com/ will be returned
-	 */
-	public function getRootDir()
-	{
-		return dirname(dirname(dirname(dirname(__DIR__))));
-	}
-
-	/**
-	 * @return TemplateProcessor
-	 */
-	public function getTemplateProcessor()
-	{
-		return $this->templateProcessor;
-	}
-
-	public function isConsole()
-	{
-		return $this->console;
-	}
-
-	public function offsetExists($offset)
-	{
-		return isset($this->silex[$offset]);
-	}
-
-	public function offsetGet($offset)
-	{
-		return $this->silex[$offset];
-	}
-
-	public function offsetSet($offset, $value)
-	{
-		$this->silex[$offset] = $value;
-	}
-
-	public function offsetUnset($offset)
-	{
-		unset($this->silex[$offset]);
-	}
-
-	public function getInstanceId()
-	{
-		return $this->instanceId;
-	}
+    public function error($callback, $prepend = false)
+    {
+        $this[ExceptionService::class]->error($callback, $prepend);
+    }
 
 }

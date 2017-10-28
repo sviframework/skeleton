@@ -1,10 +1,10 @@
 <?php
 
-namespace Svi\File\Service;
+namespace Svi\FileBundle\Service;
 
-use Svi\Base\ContainerAware;
-use Svi\File\BundleTrait;
-use Svi\File\Classes\File;
+use Svi\BaseBundle\ContainerAware;
+use Svi\FileBundle\BundleTrait;
+use Svi\FileBundle\Classes\File;
 
 class ImageService extends ContainerAware
 {

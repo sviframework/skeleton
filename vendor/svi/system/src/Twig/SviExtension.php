@@ -1,8 +1,10 @@
 <?php
 
-namespace Svi;
+namespace Svi\Twig;
 
-class SilexTwigExtension extends \Twig_Extension
+use Svi\Application;
+
+class SviExtension extends \Twig_Extension
 {
 	/**
 	 * @var Application
@@ -60,22 +62,22 @@ class SilexTwigExtension extends \Twig_Extension
 
 	public function transFunction($key, array $params = [])
 	{
-		return $this->app->getTranslation()->trans($key, $params);
+		return $this->app->getTranslationService()->trans($key, $params);
 	}
 
 	public function urlFunction($route, array $parameters = [])
 	{
-		return $this->app->getRouting()->getUrl($route, $parameters, true);
+		return $this->app->getRoutingService()->getUrl($route, $parameters, true);
 	}
 
 	public function pathFunction($route, array $parameters = [])
 	{
-		return $this->app->getRouting()->getUrl($route, $parameters);
+		return $this->app->getRoutingService()->getUrl($route, $parameters);
 	}
 
 	public function assetFunction($asset)
 	{
-		return '/bundles/' . $asset . '?' . $this->app->getConfig()->get('assetsVersion');
+		return '/bundles/' . $asset . '?' . $this->app->getConfigService()->get('assetsVersion');
 	}
 
 	/**

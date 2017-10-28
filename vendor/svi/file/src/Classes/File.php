@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\File\Classes;
+namespace Svi\FileBundle\Classes;
 
 class File
 {
@@ -120,7 +120,7 @@ class File
 	{
 		$sz = 'BKMGTP';
 		$factor = floor((strlen($bytes) - 1) / 3);
-		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . @$sz[$factor];
+		return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) . (isset($sz[$factor]) ? $sz[$factor] : null);
 	}
 
 }

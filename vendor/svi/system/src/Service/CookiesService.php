@@ -1,8 +1,12 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class Cookies
+use Svi\Application;
+use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Response;
+
+class CookiesService
 {
 	/**
 	 * @var Application
@@ -26,13 +30,13 @@ class Cookies
 
 	public function set($name, $value, $lifeTime = 0)
 	{
-		$response = new \Symfony\Component\HttpFoundation\Response();
-		$response->headers->setCookie(new \Symfony\Component\HttpFoundation\Cookie($name, $value, $lifeTime ? time() + $lifeTime : 0));
+		$response = new Response();
+		$response->headers->setCookie(new Cookie($name, $value, $lifeTime ? time() + $lifeTime : 0));
 		$response->sendHeaders();
 	}
 
 	public function remove($name) {
-		$response = new \Symfony\Component\HttpFoundation\Response();
+		$response = new Response();
 		$response->headers->clearCookie($name);
 		$response->sendHeaders();
 	}

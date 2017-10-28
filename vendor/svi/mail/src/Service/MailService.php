@@ -1,10 +1,9 @@
 <?php
 
-namespace Svi\Mail\Service;
+namespace Svi\MailBundle\Service;
 
 use Svi\Application;
-use Svi\Base\Container;
-use Svi\Base\ContainerAware;
+use Svi\BaseBundle\ContainerAware;
 
 class MailService extends ContainerAware
 {
@@ -19,15 +18,15 @@ class MailService extends ContainerAware
 
 	public function sendSpool()
 	{
-		if (!$this->c->getConfig()->getParameter('mail.spool')) {
+		if (!$this->c->getConfigService()->getParameter('mail.spool')) {
 			throw new \Exception('No mail.spool dir configured');
 		}
-		$spool = new \Swift_FileSpool($this->c->getApp()->getRootDir() . '/' . $this->c->getConfig()->getParameter('mail.spool'));
-		if ($this->c->getConfig()->getParameter('mail.spoolTimeLimit')) {
-			$spool->setTimeLimit($this->c->getConfig()->getParameter('mail.spoolTimeLimit'));
+		$spool = new \Swift_FileSpool($this->c->getApp()->getRootDir() . '/' . $this->c->getConfigService()->getParameter('mail.spool'));
+		if ($this->c->getConfigService()->getParameter('mail.spoolTimeLimit')) {
+			$spool->setTimeLimit($this->c->getConfigService()->getParameter('mail.spoolTimeLimit'));
 		}
-		if ($this->c->getConfig()->getParameter('mail.spoolMessageLimit')) {
-			$spool->setMessageLimit($this->c->getConfig()->getParameter('mail.spoolMessageLimit'));
+		if ($this->c->getConfigService()->getParameter('mail.spoolMessageLimit')) {
+			$spool->setMessageLimit($this->c->getConfigService()->getParameter('mail.spoolMessageLimit'));
 		}
 
 		$spool->flushQueue($this->getRealTransport());
@@ -47,8 +46,8 @@ class MailService extends ContainerAware
 		if (!$this->swift) {
 			$transport = null;
 
-			if ($this->c->getConfig()->getParameter('mail.spool')) {
-				$spool = new \Swift_FileSpool($this->c->getApp()->getRootDir() . '/' . $this->c->getConfig()->getParameter('mail.spool'));
+			if ($this->c->getConfigService()->getParameter('mail.spool')) {
+				$spool = new \Swift_FileSpool($this->c->getApp()->getRootDir() . '/' . $this->c->getConfigService()->getParameter('mail.spool'));
 				$transport = new \Swift_SpoolTransport($spool);
 			} else {
 				$transport = $this->getRealTransport();
@@ -62,25 +61,25 @@ class MailService extends ContainerAware
 
 	private function getRealTransport()
 	{
-		switch ($this->c->getConfig()->getParameter('mail.transport')) {
+		switch ($this->c->getConfigService()->getParameter('mail.transport')) {
 			case 'mail':
 				$transport = new \Swift_SendmailTransport();
 				break;
 			case 'smtp':
-				if (!$this->c->getConfig()->getParameter('mail.host')) {
+				if (!$this->c->getConfigService()->getParameter('mail.host')) {
 					throw new \Exception('No mail.host defined for smtp in config');
 				}
-				if (!$this->c->getConfig()->getParameter('mail.port')) {
+				if (!$this->c->getConfigService()->getParameter('mail.port')) {
 					throw new \Exception('No mail.port defined for smtp in config');
 				}
 				$transport = new \Swift_SmtpTransport(
-					$this->c->getConfig()->getParameter('mail.host'),
-					$this->c->getConfig()->getParameter('mail.port'),
-					$this->c->getConfig()->getParameter('mail.encryption')
+					$this->c->getConfigService()->getParameter('mail.host'),
+					$this->c->getConfigService()->getParameter('mail.port'),
+					$this->c->getConfigService()->getParameter('mail.encryption')
 				);
 				$transport
-					->setUsername($this->c->getConfig()->getParameter('mail.user'))
-					->setPassword($this->c->getConfig()->getParameter('mail.password'));
+					->setUsername($this->c->getConfigService()->getParameter('mail.user'))
+					->setPassword($this->c->getConfigService()->getParameter('mail.password'));
 				break;
 		}
 
@@ -91,4 +90,4 @@ class MailService extends ContainerAware
 		return $transport;
 	}
 
-} 
+}

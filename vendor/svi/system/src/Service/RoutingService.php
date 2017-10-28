@@ -1,8 +1,11 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class Routing
+use Svi\Application;
+use Svi\Service\BundlesService\Bundle;
+
+class RoutingService
 {
 	/**
 	 * @var Application
@@ -13,52 +16,54 @@ class Routing
 	public function __construct(Application $app)
 	{
 		$this->app = $app;
-		foreach ($this->app->getBundles()->getBundles() as $b) {
-			$this->loadBundleRoutes($b, $b->getRoutes());
+		foreach ($this->app->getBundlesService()->getBundles() as $b) {
+			$this->loadBundleRoutes($b);
 		}
 	}
 
-	public function loadBundleRoutes(Bundle $bundle, array $bundleRoutes)
+	public function loadBundleRoutes(Bundle $bundle)
 	{
 		$app = $this->app;
-		foreach ($bundleRoutes as $controller => $routes) {
-			$shareName = 'controller.' . $bundle->getName() . '.' . $controller;
+		foreach ($bundle->getRoutes() as $controller => $routes) {
 			$className = $bundle->getNamespace() . '\\Controller\\' . $controller . 'Controller';
-			$app->getSilex()[$shareName] = function() use ($app, $className) {
+			$app[$className] = function() use ($app, $className) {
 				return new $className($app);
 			};
 			foreach ($routes as $name => $route) {
 				if (is_numeric($name)) {
 					$name = '_route' . rand() . microtime(true);
 				}
-				if (is_string($route)) {
-					$parts = explode(':', $route);
-					$app->getSilex()->get($parts[0], $shareName . ':' . $parts[1] . 'Action');
-					$app->getSilex()->post($parts[0], $shareName . ':' . $parts[1] . 'Action');
-					$this->add($name, ['url' => $parts[0], 'controller' => $className . '::' . $parts[1]]);
-				} elseif (is_array($route)) {
-					$get = $app->getSilex()->get($route['route'], $shareName . ':' . $route['method'] . 'Action');
-					$post = $app->getSilex()->post($route['route'], $shareName . ':' . $route['method'] . 'Action');
-					if (@$route['requirements'] && count($route['requirements'])) {
-						foreach ($route['requirements'] as $key => $value) {
-							$get->assert($key, $value);
-							$post->assert($key, $value);
-						}
-					}
-					$this->add($name, ['url' => $route['route'], 'controller' => $className . '::' . $route['method']]);
-				}
+                $parts = explode(':', $route);
+                $this->add($name, ['url' => $parts[0], 'controller' => $className, 'method' => $parts[1] . 'Action']);
 			}
 		}
 	}
 
 	public function add($name, $route)
 	{
+	    $route['regexp'] = '#^' . preg_replace('#({[A-z_]+[A-z0-9_]?})#', '([A-z0-9-_.]+)', $route['url']) . '$#';
 		$this->routes[$name] = $route;
 	}
 
+	public function dispatchUrl($url)
+    {
+        $matches = [];
+
+        foreach ($this->routes as $route) {
+            if (preg_match($route['regexp'], $url, $matches)) {
+                array_shift($matches);
+                $route['args'] = $matches;
+
+                return $route;
+            }
+        }
+
+        return false;
+    }
+
 	public function getUrl($name, array $parameters = null, $absolute = false, $protocol = null)
 	{
-		if (!($route = @$this->routes[$name]['url'])) {
+		if (!($route = isset($this->routes[$name]) && isset($this->routes[$name]['url']) ? $this->routes[$name]['url'] : null)) {
 			throw new \Exception('There is no route with name ' . $name);
 		}
 		if ($parameters) {

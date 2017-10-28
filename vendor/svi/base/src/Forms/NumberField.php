@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
 class NumberField extends Field
 {

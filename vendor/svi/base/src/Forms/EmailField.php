@@ -1,8 +1,8 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
-use Svi\Base\Validators\Email;
+use Svi\BaseBundle\Validators\Email;
 
 class EmailField extends Field
 {

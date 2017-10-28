@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
 class SubmitField extends Field
 {
@@ -29,7 +29,7 @@ class SubmitField extends Field
 
 	public function getCancel()
 	{
-		return @$this->parameters['cancel'];
+		return isset($this->parameters['cancel']) ? $this->parameters['cancel'] : null;
 	}
 	public function setCancel($value)
 	{

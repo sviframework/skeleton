@@ -1,9 +1,9 @@
 <?php
 
-namespace Svi\Base\Service;
+namespace Svi\BaseBundle\Service;
 
-use Svi\Base\BundleTrait;
-use Svi\Base\ContainerAware;
+use Svi\BaseBundle\BundleTrait;
+use Svi\BaseBundle\ContainerAware;
 
 abstract class UserService extends ContainerAware
 {
@@ -11,13 +11,13 @@ abstract class UserService extends ContainerAware
 
 	public function logout()
 	{
-		$this->c->getSession()->uns('uid');
-		$this->c->getCookies()->remove('REMEMBERME');
+		$this->c->getSessionService()->uns('uid');
+		$this->c->getCookiesService()->remove('REMEMBERME');
 	}
 
 	protected function loginUser($id, $remember = false)
 	{
-		$this->c->getSession()->set('uid', $id);
+		$this->c->getSessionService()->set('uid', $id);
 		if ($remember) {
 			$this->remember($id);
 		}
@@ -25,7 +25,7 @@ abstract class UserService extends ContainerAware
 
 	protected function getAuthorisedUserId()
 	{
-		if ($id = $this->c->getSession()->get('uid')) {
+		if ($id = $this->c->getSessionService()->get('uid')) {
 			return $id;
 		} elseif ($id = $this->getRememberId()) {
 			$this->loginUser($id);
@@ -37,9 +37,9 @@ abstract class UserService extends ContainerAware
 
 	protected function getRememberId()
 	{
-		if ($this->c->getCookies()->has('REMEMBERME')) {
+		if ($this->c->getCookiesService()->has('REMEMBERME')) {
 			$cookie = openssl_decrypt(
-                base64_decode($this->c->getCookies()->get('REMEMBERME')),
+                base64_decode($this->c->getCookiesService()->get('REMEMBERME')),
 			    'BF-CBC',
                 $this->getParameter('secret'), 0, 'fL34SpFw'
             );
@@ -58,7 +58,7 @@ abstract class UserService extends ContainerAware
             time() . '[|]' . $id . '[|]' . microtime(),
             'BF-CBC',
 			$this->getParameter('secret'), 0, 'fL34SpFw');
-		$this->c->getCookies()->set('REMEMBERME', base64_encode($login), 60*60*24*365);
+		$this->c->getCookiesService()->set('REMEMBERME', base64_encode($login), 60*60*24*365);
 	}
 
 } 

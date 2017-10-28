@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
 abstract class Field
 {
@@ -40,8 +40,8 @@ abstract class Field
 
     public function getViewParameters()
     {
-        $attr = @$this->parameters['attr'];
-        $class = @$attr['class'];
+        $attr = isset($this->parameters['attr']) ? $this->parameters['attr'] : null;
+        $class = isset($attr['class']) ? $attr['class'] : null;
         if ($class) {
             unset($attr['class']);
         }
@@ -109,7 +109,7 @@ abstract class Field
      */
     public function getRequired()
     {
-        return @$this->parameters['required'] ? true : false;
+        return isset($this->parameters['required']) ? !!$this->parameters['required'] : false;
     }
 
     public function setRequired($value)
@@ -126,7 +126,7 @@ abstract class Field
 
     public function getRequiredMessage()
     {
-        return @$this->parameters['requiredMessage'];
+        return isset($this->parameters['requiredMessage']) ? $this->parameters['requiredMessage']: null;
     }
 
     public function setRequiredMessage($value)
@@ -138,7 +138,7 @@ abstract class Field
 
     public function getHelp()
     {
-        return @$this->parameters['help'];
+        return isset($this->parameters['help']) ? $this->parameters['help'] : null;
     }
 
     public function setHelp($value)
@@ -155,7 +155,7 @@ abstract class Field
 
     public function getReadOnly()
     {
-        return @$this->parameters['readOnly'];
+        return isset($this->parameters['readOnly']) ? $this->parameters['readOnly'] : null;
     }
 
     public function setReadOnly($value)
@@ -167,12 +167,12 @@ abstract class Field
 
     public function isDisabled()
     {
-        return @$this->parameters['disabled'];
+        return isset($this->parameters['disabled']) ? $this->parameters['disabled'] : null;
     }
 
     public function getDisabled()
     {
-        return @$this->parameters['disabled'];
+        return isset($this->parameters['disabled']) ? $this->parameters['disabled'] : null;
     }
 
     public function setDisabled($value)
@@ -184,7 +184,7 @@ abstract class Field
 
     public function getTemplate()
     {
-        return @$this->parameters['template'];
+        return isset($this->parameters['template']) ? $this->parameters['template'] : null;
     }
 
     public function setTemplate($value)
@@ -196,7 +196,7 @@ abstract class Field
 
     public function getPlaceholder()
     {
-        return @$this->parameters['placeholder'];
+        return isset($this->parameters['placeholder']) ? $this->parameters['placeholder'] : null;
     }
 
     public function getData()

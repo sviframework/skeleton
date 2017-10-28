@@ -1,8 +1,8 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
-use Svi\Base\Container;
+use Svi\BaseBundle\Container;
 use Symfony\Component\HttpFoundation\Request;
 
 class Form
@@ -25,7 +25,7 @@ class Form
 	{
 		$this->c = $c;
 		$this->parameters = $parameters;
-		if (@strtolower($parameters['method']) == 'get') {
+		if (isset($parameters['method']) && strtolower($parameters['method']) == 'get') {
 			$this->method = 'get';
 		}
 		if (isset($parameters['csrf'])) {
@@ -38,7 +38,7 @@ class Form
 		$data = $this->method == 'post' ? $request->request->all() : $request->query->all();
 		$data = array_merge($data, $_FILES);
 
-		if (!@$data['form_id'] || $data['form_id'] != $this->getId()) {
+		if (!isset($data['form_id']) || !$data['form_id'] || $data['form_id'] != $this->getId()) {
 			$this->submitted = false;
 			return $this;
 		}
@@ -226,12 +226,12 @@ class Form
 	 */
 	public function getTemplatesPath()
 	{
-		return @$this->parameters['templatesPath'];
+		return isset($this->parameters['templatesPath']) ? $this->parameters['templatesPath'] : null;
 	}
 
 	public function getNoValidate()
 	{
-		return @$this->parameters['noValidate'];
+		return isset($this->parameters['noValidate']) ? $this->parameters['noValidate'] : null;
 	}
 
 	public function setNoValidate($value)
@@ -283,7 +283,7 @@ class Form
 
 	public function getAttr()
 	{
-		return @$this->parameters['attr'] === null ? [] : $this->parameters['attr'];
+		return !isset($this->parameters['attr']) || $this->parameters['attr'] === null ? [] : $this->parameters['attr'];
 	}
 
 	protected function renderFieldView(Field $field)
@@ -299,7 +299,7 @@ class Form
 		} else {
 			$templatePath = ($this->getTemplatesPath() ? $this->getTemplatesPath() : 'svi/base/src/Forms/Views') . '/' .$template;
 		}
-		return $this->c->getApp()->getTemplateProcessor()->render($templatePath, $params);
+		return $this->c->getApp()->getTemplateService()->render($templatePath, $params);
 	}
 
 	/**

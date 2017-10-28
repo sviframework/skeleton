@@ -1,6 +1,6 @@
 {
   "require": {
-    "silex/silex": ">=2.2",
+    "symfony/http-foundation": "~2.8|^3.0",
     "doctrine/dbal": ">=2.5",
     "twig/twig": ">=2.4",
     "swiftmailer/swiftmailer": ">=6"
@@ -8,10 +8,10 @@
   "autoload": {
     "psr-4": {
       "Svi\\": "vendor/svi/system/src",
-      "Svi\\Base\\": "vendor/svi/base/src",
-      "Svi\\Crud\\": "vendor/svi/crud/src",
-      "Svi\\File\\": "vendor/svi/file/src",
-      "Svi\\Mail\\": "vendor/svi/mail/src"
+      "Svi\\BaseBundle\\": "vendor/svi/base/src",
+      "Svi\\CrudBundle\\": "vendor/svi/crud/src",
+      "Svi\\FileBundle\\": "vendor/svi/file/src",
+      "Svi\\MailBundle\\": "vendor/svi/mail/src"
     }
   }
 }

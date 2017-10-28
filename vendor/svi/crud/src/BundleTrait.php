@@ -1,10 +1,10 @@
 <?php
 
-namespace Svi\Crud;
+namespace Svi\CrudBundle;
 
 trait BundleTrait
 {
-    use \Svi\BundleTrait;
+    use \Svi\Service\BundlesService\BundleTrait;
 
 
 

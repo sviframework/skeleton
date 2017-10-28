@@ -1,8 +1,8 @@
 <?php
 
-namespace Svi\Base\Manager;
+namespace Svi\BaseBundle\Manager;
 
-use Svi\Base\Entity\Setting;
+use Svi\BaseBundle\Entity\Setting;
 use Svi\Manager;
 
 class SettingManager extends Manager

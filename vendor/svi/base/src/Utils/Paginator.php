@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Utils;
+namespace Svi\BaseBundle\Utils;
 
 use Symfony\Component\HttpFoundation\Request;
 

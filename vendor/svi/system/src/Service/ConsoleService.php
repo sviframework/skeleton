@@ -1,13 +1,15 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class Console
+use Svi\Application;
+use Svi\Service\ConsoleService\ConsoleCommand;
+
+class ConsoleService
 {
-	/**
-	 * @var Application
-	 */
+	/** @var Application */
 	private $app;
+	/** @var ConsoleCommand[] */
 	private $commands;
 	private $argv;
 
@@ -16,10 +18,7 @@ class Console
 		$this->app = $app;
 		$this->argv = $argv;
 
-		$this->addCommand(new EntityUpdateCommand($this->app));
-		$this->addCommand(new AssetsInstallCommand($this->app));
-		$this->addCommand(new RoutesListCommand($this->app));
-		foreach ($this->app->getBundles()->getCommandClasses() as $c) {
+		foreach ($this->app->getBundlesService()->getCommandClasses() as $c) {
 			$this->addCommand(new $c($this->app));
 		}
 	}

@@ -1,6 +1,8 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service\BundlesService;
+
+use Svi\Application;
 
 abstract class Bundle
 {
@@ -58,7 +60,7 @@ abstract class Bundle
 		$result = [];
 
 		foreach ($this->managers as $managerName) {
-			$result[] = $this->app->get($managerName);
+			$result[] = $this->app[$managerName];
 		}
 
 		return $result;
@@ -121,20 +123,20 @@ abstract class Bundle
 
 	protected function getConfig()
 	{
-		return array();
+		return [];
 	}
 
 	private function loadConfig()
 	{
 		foreach ($this->getConfig() as $key => $value) {
-			$this->app->getConfig()->set($key, $value);
+			$this->app->getConfigService()->set($key, $value);
 		}
 	}
 
 	private function loadServices()
 	{
 		foreach ($this->getServices() as $class) {
-			$this->app->getSilex()[$class] = function () use ($class) {
+			$this->app[$class] = function () use ($class) {
 				return new $class($this->app);
 			};
 			$this->services[] = $class;
@@ -144,11 +146,11 @@ abstract class Bundle
 	private function loadManagers()
 	{
 		foreach ($this->getManagers() as $class) {
-			$this->app->getSilex()[$class] = function () use ($class) {
+			$this->app[$class] = function () use ($class) {
 				return new $class($this->app);
 			};
 			$this->managers[] = $class;
 		}
 	}
 
-} 
+}

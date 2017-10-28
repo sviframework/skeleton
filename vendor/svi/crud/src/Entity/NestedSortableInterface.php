@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Crud\Entity;
+namespace Svi\CrudBundle\Entity;
 
 interface NestedSortableInterface extends SortableInterface
 {

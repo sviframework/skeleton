@@ -1,6 +1,9 @@
 <?php
 
-namespace Svi;
+namespace Svi\BaseBundle\Console;
+
+use Svi\Service\BundlesService\Bundle;
+use Svi\Service\ConsoleService\ConsoleCommand;
 
 class AssetsInstallCommand extends ConsoleCommand
 {
@@ -29,7 +32,7 @@ class AssetsInstallCommand extends ConsoleCommand
 
 		chdir($assetsDir);
 		/** @var Bundle $b */
-		foreach ($this->getApp()->getBundles()->getBundles() as $b) {
+		foreach ($this->getApp()->getBundlesService()->getBundles() as $b) {
 			$dir = $b->getDir() . '/Public';
 			$dest = strtolower($b->getName());
 			if (file_exists($dir)) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -31,7 +31,7 @@ class ImageField extends FileField
 
 	public function getMinWidth()
 	{
-		return @$this->parameters['minWidth'];
+		return isset($this->parameters['minWidth']) ? $this->parameters['minWidth'] : null;
 	}
 	public function setMinWidth($value)
 	{
@@ -41,7 +41,7 @@ class ImageField extends FileField
 
 	public function getMaxWidth()
 	{
-		return @$this->parameters['maxWidth'];
+		return isset($this->parameters['maxWidth']) ? $this->parameters['maxWidth'] : null;
 	}
 	public function setMaxWidth($value)
 	{
@@ -51,7 +51,7 @@ class ImageField extends FileField
 
 	public function getMinHeight()
 	{
-		return @$this->parameters['minHeight'];
+		return isset($this->parameters['minHeight']) ? $this->parameters['minHeight'] : null;
 	}
 	public function setMinHeight($value)
 	{
@@ -61,7 +61,7 @@ class ImageField extends FileField
 
 	public function getMaxHeight()
 	{
-		return @$this->parameters['maxHeight'];
+		return isset($this->parameters['maxHeight']) ? $this->parameters['maxHeight'] : null;
 	}
 	public function setMaxHeight($value)
 	{
@@ -71,7 +71,7 @@ class ImageField extends FileField
 
 	public function getImageSizeMessage()
 	{
-		return @$this->parameters['imageSizeMessage'];
+		return isset($this->parameters['imageSizeMessage']) ? $this->parameters['imageSizeMessage'] : null;
 	}
 	public function setImageSizeMessage($value)
 	{

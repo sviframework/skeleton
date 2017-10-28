@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service\BundlesService;
 
 trait BundleTrait
 {
@@ -8,9 +8,9 @@ trait BundleTrait
     protected function get($key)
     {
         if (isset($this->c)) {
-            return $this->c->getApp()->get($key);
+            return $this->c->getApp()[$key];
         } else {
-            return $this->getApp()->get($key);
+            return $this->getApp()[$key];
         }
     }
 

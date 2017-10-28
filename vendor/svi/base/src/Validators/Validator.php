@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Validators;
+namespace Svi\BaseBundle\Validators;
 
 abstract class Validator
 {

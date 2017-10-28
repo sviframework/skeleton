@@ -1,8 +1,8 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
-use Svi\Base\Entity\SelectableInterface;
+use Svi\BaseBundle\Entity\SelectableInterface;
 
 class ChoiceField extends Field
 {
@@ -59,7 +59,7 @@ class ChoiceField extends Field
 
 	public function getChoices()
 	{
-		return is_array(@$this->parameters['choices']) ? $this->parameters['choices'] : [];
+		return isset($this->parameters['choices']) && is_array($this->parameters['choices']) ? $this->parameters['choices'] : [];
 	}
 	public function setChoices(array $value = [])
 	{

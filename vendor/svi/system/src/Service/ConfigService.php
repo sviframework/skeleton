@@ -1,8 +1,10 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class Config
+use Svi\Application;
+
+class ConfigService
 {
 	private $app;
 	protected $config;
@@ -29,7 +31,7 @@ class Config
 		$config = &$this->config;
 		foreach ($name as $key => &$n) {
 			if ($key >= count($name) - 1) {
-				return @$config[$n];
+				return isset($config[$n]) ? $config[$n] : null;
 			} elseif (isset($config[$n])) {
 				$config = &$config[$n];
 			} else {

@@ -1,6 +1,10 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service\HttpService;
+
+use Svi\Application;
+use Svi\Container;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 abstract class Controller
 {
@@ -24,12 +28,12 @@ abstract class Controller
 			$template = implode('/', $parts) . '/Views/' . $lastPart . '/' . $template;
 		}
 
-		return $this->c->getApp()->getTemplateProcessor()->render($template, $parameters);
+		return $this->c->getApp()->getTemplateService()->render($template, $parameters);
 	}
 
 	public function generateUrl($name, array $parameters = [], $absolute = false)
 	{
-		return $this->c->getRouting()->getUrl($name, $parameters, $absolute);
+		return $this->c->getRoutingService()->getUrl($name, $parameters, $absolute);
 	}
 
 	protected function getTemplateParameters(array $parameters = [])
@@ -39,7 +43,7 @@ abstract class Controller
 
 	public function getParameter($key)
 	{
-		return $this->c->getApp()->getConfig()->getParameter($key);
+		return $this->c->getApp()->getConfigService()->getParameter($key);
 	}
 
 	public function redirect($route, array $parameters = [])
@@ -49,7 +53,7 @@ abstract class Controller
 
 	public function redirectToUrl($url)
 	{
-		return new \Symfony\Component\HttpFoundation\RedirectResponse($url);
+		return new RedirectResponse($url);
 	}
 
 	public function getRequest()

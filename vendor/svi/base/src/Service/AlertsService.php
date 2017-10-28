@@ -1,9 +1,9 @@
 <?php
 
-namespace Svi\Base\Service;
+namespace Svi\BaseBundle\Service;
 
-use Svi\Base\BundleTrait;
-use Svi\Base\ContainerAware;
+use Svi\BaseBundle\BundleTrait;
+use Svi\BaseBundle\ContainerAware;
 
 class AlertsService extends ContainerAware
 {
@@ -11,19 +11,19 @@ class AlertsService extends ContainerAware
 
 	public function addAlert($type, $text)
 	{
-		$alerts = $this->c->getSession()->get('alerts');
+		$alerts = $this->c->getSessionService()->get('alerts');
 		if (!$alerts) {
 			$alerts = [];
 		}
 		$alerts[] = ['type' => $type, 'text' => $text];
 
-		$this->c->getSession()->set('alerts', $alerts);
+		$this->c->getSessionService()->set('alerts', $alerts);
 	}
 
 	public function getAlerts()
 	{
-		$alerts = $this->c->getSession()->get('alerts');
-		$this->c->getSession()->uns('alerts');
+		$alerts = $this->c->getSessionService()->get('alerts');
+		$this->c->getSessionService()->uns('alerts');
 
 		return $alerts;
 	}

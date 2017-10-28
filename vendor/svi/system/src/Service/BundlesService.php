@@ -1,8 +1,12 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class Bundles
+use Svi\Application;
+use Svi\Manager;
+use Svi\Service\BundlesService\Bundle;
+
+class BundlesService
 {
 	private $app;
 	private $bundles;
@@ -10,9 +14,12 @@ class Bundles
 	public function __construct(Application $app)
 	{
 		$this->app = $app;
-		foreach ($app->getConfig()->get('bundles') as $bundleName) {
+		foreach ($app->getConfigService()->get('bundles') as $bundleName) {
 			/** @var Bundle $bundle */
 			$bundle = new $bundleName($app);
+			if (!($bundle instanceof Bundle)) {
+			    throw new \Exception("Class $bundleName doesn't extends " . Bundle::class);
+            }
 			$this->bundles[] = $bundle;
 			$app[$bundleName] = $bundle;
 		}
@@ -62,4 +69,4 @@ class Bundles
 		return $result;
 	}
 
-} 
+}

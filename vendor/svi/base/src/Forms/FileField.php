@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base\Forms;
+namespace Svi\BaseBundle\Forms;
 
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -27,7 +27,7 @@ class FileField extends Field
 
 	public function setData($value)
 	{
-		if ($value && is_array($value) && @$value['tmp_name']) {
+		if ($value && is_array($value) && isset($value['tmp_name']) && $value['tmp_name']) {
 			$this->data = new UploadedFile($value['tmp_name'], $value['name']);
 		}
 		return $this;
@@ -72,7 +72,7 @@ class FileField extends Field
 
 	public function getMaxSize()
 	{
-		return @$this->parameters['maxSize'];
+		return isset($this->parameters['maxSize']) ? $this->parameters['maxSize'] : null;
 	}
 	public function setMaxSize($value)
 	{
@@ -101,7 +101,7 @@ class FileField extends Field
 
 	public function getMaxSizeMessage()
 	{
-		return @$this->parameters['maxSizeMessage'];
+		return isset($this->parameters['maxSizeMessage']) ? $this->parameters['maxSizeMessage'] : null;
 	}
 	public function setMaxSizeMessage($value)
 	{
@@ -111,7 +111,7 @@ class FileField extends Field
 
 	public function getMimeTypesMessage()
 	{
-		return @$this->parameters['mimeTypesMessage'];
+		return isset($this->parameters['mimeTypesMessage']) ? $this->parameters['mimeTypesMessage'] : null;
 	}
 	public function setMimeTypesMessage($value)
 	{
@@ -121,7 +121,7 @@ class FileField extends Field
 
 	public function getErrorMessage()
 	{
-		return @$this->parameters['errorMessage'];
+		return isset($this->parameters['errorMessage']) ? $this->parameters['errorMessage'] : null;
 	}
 	public function setErrorMessage($value)
 	{

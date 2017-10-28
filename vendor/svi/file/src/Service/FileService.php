@@ -1,10 +1,10 @@
 <?php
 
-namespace Svi\File\Service;
+namespace Svi\FileBundle\Service;
 
-use Svi\Base\ContainerAware;
-use Svi\Base\Utils\Utils;
-use Svi\File\BundleTrait;
+use Svi\BaseBundle\ContainerAware;
+use Svi\BaseBundle\Utils\Utils;
+use Svi\FileBundle\BundleTrait;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 

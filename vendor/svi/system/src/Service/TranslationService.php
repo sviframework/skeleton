@@ -1,8 +1,11 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class Translation
+use Svi\Application;
+use Svi\Service\BundlesService\Bundle;
+
+class TranslationService
 {
 	/**
 	 * @var Application
@@ -14,7 +17,7 @@ class Translation
 	public function __construct(Application $app)
 	{
 		$this->app = $app;
-		$this->locale = strtolower($app->getConfig()->get('locale'));
+		$this->locale = strtolower($app->getConfigService()->get('locale'));
 	}
 
 	public function trans($string, array $params = [])
@@ -32,7 +35,7 @@ class Translation
 			return null;
 		}
 
-		if (!$this->app->getConfig()->get('debug')) {
+		if (!$this->app->getConfigService()->get('debug')) {
 			$cacheFile = $this->app->getRootDir().'/app/cache/translations_' . $this->locale . '.php';
 			if (file_exists($cacheFile)) {
 				$this->translations = include $cacheFile;
@@ -72,8 +75,7 @@ class Translation
             return $result;
         };
 
-		/** @var Bundle $b */
-		foreach ($this->app->getBundles()->getBundles() as $b) {
+		foreach ($this->app->getBundlesService()->getBundles() as $b) {
 			foreach ($b->getTranslations($this->locale) as $key => $value) {
 			    if (!is_array($value)) {
 			        $result[$key] = $value;

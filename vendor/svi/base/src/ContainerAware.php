@@ -1,11 +1,11 @@
 <?php
 
-namespace Svi\Base;
+namespace Svi\BaseBundle;
 
 class ContainerAware extends \Svi\ContainerAware
 {
 	/**
-	 * @var \Svi\Base\Container
+	 * @var \Svi\BaseBundle\Container
 	 */
 	protected $c;
 

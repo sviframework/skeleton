@@ -1,8 +1,11 @@
 <?php
 
-namespace Svi;
+namespace Svi\Service;
 
-class TemplateProcessor
+use Svi\Application;
+use Svi\Twig\SviExtension;
+
+class TemplateService
 {
 	const TEMPLATE_PROCESSOR_TWIG = 'twig';
 
@@ -13,6 +16,22 @@ class TemplateProcessor
 	public function __construct(Application $app)
 	{
 		$this->app = $app;
+
+        if ($this->app->getConfigService()->get('twig')) {
+            $this->app['twig'] = function () {
+                $loader = new \Twig_Loader_Filesystem([
+                    $this->app->getRootDir() . '/src',
+                    $this->app->getRootDir() . '/vendor',
+                ]);
+                $twig = new \Twig_Environment($loader, [
+                        'cache' => $this->app['debug'] ? false : $this->app->getRootDir() . '/app/cache',
+                    ] + $this->app->getConfigService()->get('twig'));
+                $twig->addExtension(new SviExtension($this->app));
+
+                return $twig;
+            };
+            $this->addProcessor('twig', 'twig');
+        }
 	}
 
 	public function addProcessor($type, $instance)
@@ -26,7 +45,7 @@ class TemplateProcessor
 			throw new \Exception('There is no registered "' . $type . '" template processor');
 		}
 
-		return $this->processors[$type];
+		return $this->app[$this->processors[$type]];
 	}
 
 	public function render($templateName, array $context = [], $processorType = null)

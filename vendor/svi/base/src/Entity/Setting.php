@@ -1,8 +1,10 @@
 <?php
 
-namespace Svi\Base\Entity;
+namespace Svi\BaseBundle\Entity;
 
-class Setting extends \Svi\Entity
+use Svi\Entity;
+
+class Setting extends Entity
 {
 	private $id;
 	private $key;

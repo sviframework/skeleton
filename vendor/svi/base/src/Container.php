@@ -1,6 +1,6 @@
 <?php
 
-namespace Svi\Base;
+namespace Svi\BaseBundle;
 
 class Container extends \Svi\Container
 {
@@ -10,31 +10,31 @@ class Container extends \Svi\Container
 	 */
 	public function getSviBaseBundle()
 	{
-		return $this->getApp()->get(Bundle::class);
+		return $this->getApp()[Bundle::class];
 	}
 
 	/**
-	 * @return \Svi\Mail\Bundle
+	 * @return \Svi\MailBundle\Bundle
 	 */
 	public function getSviMailBundle()
 	{
-		return $this->getApp()->get(\Svi\Mail\Bundle::class);
+		return $this->getApp()[\Svi\MailBundle\Bundle::class];
 	}
 
 	/**
-	 * @return \Svi\File\Bundle
+	 * @return \Svi\FileBundle\Bundle
 	 */
 	public function getSviFileBundle()
 	{
-		return $this->getApp()->get(\Svi\File\Bundle::class);
+		return $this->getApp()[\Svi\FileBundle\Bundle::class];
 	}
 
 	/**
-	 * @return \Svi\Crud\Bundle
+	 * @return \Svi\CrudBundle\Bundle
 	 */
 	public function getSviCrudBundle()
 	{
-		return $this->getApp()->get(\Svi\Crud\Bundle::class);
+		return $this->getApp()[\Svi\CrudBundle\Bundle::class];
 	}
 
 } 

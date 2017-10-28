@@ -3,6 +3,10 @@
 namespace Svi;
 
 use Doctrine\DBAL\Connection;
+use Svi\Service\ConfigService;
+use Svi\Service\CookiesService;
+use Svi\Service\RoutingService;
+use Svi\Service\SessionService;
 
 class Container
 {
@@ -13,12 +17,9 @@ class Container
 	 */
 	private $app;
 
-	private $silex;
-
 	private function __construct(Application $app)
 	{
 		$this->app = $app;
-		$this->silex = $app->getSilex();
 	}
 
 	private function __clone(){}
@@ -44,52 +45,44 @@ class Container
 	}
 
 	/**
-	 * @return \Silex\Application
-	 */
-	public function getSilex()
-	{
-		return $this->silex;
-	}
-
-	/**
 	 * @param string $schema
 	 * @return Connection
 	 */
 	public function getDb($schema = 'default')
 	{
-		return $this->silex['dbs'][$schema];
+		return $this->app['dbs'][$schema];
 	}
 
 	/**
-	 * @return Config
+	 * @return ConfigService
 	 */
-	public function getConfig()
+	public function getConfigService()
 	{
-		return $this->app->getConfig();
+		return $this->app->getConfigService();
 	}
 
 	/**
-	 * @return Routing
+	 * @return RoutingService
 	 */
-	public function getRouting()
+	public function getRoutingService()
 	{
-		return $this->app->getRouting();
+		return $this->app->getRoutingService();
 	}
 
 	/**
-	 * @return Session
+	 * @return SessionService
 	 */
-	public function getSession()
+	public function getSessionService()
 	{
-		return $this->app->getSession();
+		return $this->app->getSessionService();
 	}
 
 	/**
-	 * @return Cookies
+	 * @return CookiesService
 	 */
-	public function getCookies()
+	public function getCookiesService()
 	{
-		return $this->app->getCookies();
+		return $this->app->getCookiesService();
 	}
 
 	public function getRequest()
