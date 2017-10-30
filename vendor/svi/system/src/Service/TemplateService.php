@@ -27,6 +27,10 @@ class TemplateService
                         'cache' => $this->app['debug'] ? false : $this->app->getRootDir() . '/app/cache',
                     ] + $this->app->getConfigService()->get('twig'));
                 $twig->addExtension(new SviExtension($this->app));
+                $twig->addExtension(new \Twig_Extension_Debug());
+                if ($this->app['debug']) {
+                    $twig->enableDebug();
+                }
 
                 return $twig;
             };
