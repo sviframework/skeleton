@@ -68,7 +68,7 @@ class HttpService
         }
 
         if (!$this->response) {
-            throw new NotFoundHttpException();
+            throw new \Exception('Controller must return a response');
         }
 
         if (!($this->response instanceof Response)) {
