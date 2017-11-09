@@ -87,7 +87,8 @@ class HttpService
             }
         }
 
-        $this->response->send();
+        $this->response->sendContent();
+        $this->response->sendHeaders();
 
         foreach ($this->finish as $finish) {
             $finish($this->request, $this->response);
