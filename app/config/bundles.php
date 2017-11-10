@@ -4,4 +4,6 @@ return [
     \Svi\MailBundle\Bundle::class,
     \Svi\CrudBundle\Bundle::class,
     \Svi\FileBundle\Bundle::class,
+
+    \HelloBundle\Bundle::class,
 ];

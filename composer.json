@@ -1,17 +1,11 @@
 {
+  "name": "svi/skeleton",
+  "type": "project",
   "require": {
-    "symfony/http-foundation": "~2.8|^3.0",
-    "doctrine/dbal": ">=2.5",
-    "twig/twig": ">=2.4",
-    "swiftmailer/swiftmailer": ">=6"
-  },
-  "autoload": {
-    "psr-4": {
-      "Svi\\": "vendor/svi/system/src",
-      "Svi\\BaseBundle\\": "vendor/svi/base/src",
-      "Svi\\CrudBundle\\": "vendor/svi/crud/src",
-      "Svi\\FileBundle\\": "vendor/svi/file/src",
-      "Svi\\MailBundle\\": "vendor/svi/mail/src"
-    }
+    "svi/system": ">=1.0",
+    "svi/base": ">=1.0",
+    "svi/crud": ">=1.0",
+    "svi/file": ">=1.0",
+    "svi/mail": ">=1.0"
   }
 }
