@@ -1,11 +1,14 @@
 {
   "name": "svi/skeleton",
   "type": "project",
+  "license": "MIT",
   "require": {
-    "svi/system": ">=1.0",
-    "svi/base": ">=1.0",
-    "svi/crud": ">=1.0",
-    "svi/file": ">=1.0",
-    "svi/mail": ">=1.0"
+    "svi/base": "dev-master",
+    "svi/tengine": "dev-master",
+    "svi/http": "dev-master",
+    "svi/orm": "dev-master",
+    "svi/crud": "dev-master",
+    "svi/file": "dev-master",
+    "svi/mail": "dev-master"
   }
 }

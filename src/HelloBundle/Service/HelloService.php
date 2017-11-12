@@ -3,9 +3,9 @@
 namespace HelloBundle\Service;
 
 use HelloBundle\BundleTrait;
-use Svi\ContainerAware;
+use Svi\AppContainer;
 
-class HelloService extends ContainerAware
+class HelloService extends AppContainer
 {
     use BundleTrait;
 

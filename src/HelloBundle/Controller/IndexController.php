@@ -3,7 +3,7 @@
 namespace HelloBundle\Controller;
 
 use HelloBundle\BundleTrait;
-use Svi\BaseBundle\Controller\Controller;
+use Svi\HttpBundle\Controller\Controller;
 
 class IndexController extends Controller
 {
