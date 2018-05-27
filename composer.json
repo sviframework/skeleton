@@ -3,12 +3,8 @@
   "type": "project",
   "license": "MIT",
   "require": {
-    "svi/base": "dev-master",
-    "svi/tengine": "dev-master",
-    "svi/http": "dev-master",
-    "svi/orm": "dev-master",
-    "svi/crud": "dev-master",
-    "svi/file": "dev-master",
-    "svi/mail": "dev-master"
+    "svi/base": "0.0.*",
+    "svi/tengine": "0.0.*",
+    "svi/http": "0.0.*"
   }
 }
